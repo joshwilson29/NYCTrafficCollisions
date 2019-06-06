@@ -1,0 +1,6 @@
+
+LA - https://data.lacity.org/A-Safe-City/Traffic-Collision-Data-from-2010-to-Present/d5tf-ez2w
+
+NY - https://data.cityofnewyork.us/Public-Safety/NYPD-Motor-Vehicle-Collisions/h9gi-nx95
+
+IA - https://hub.arcgis.com/datasets/IowaDOT::crash-data-location
