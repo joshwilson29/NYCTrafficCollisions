@@ -1,0 +1,131 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(foreign)
+library(dplyr)
+```
+
+read in accident files
+```{r}
+acc2017 <- read.csv("f_2017/accident.csv")
+acc2016 <- read.csv("f_2016/accident.csv")
+acc2015 <- read.csv("f_2015/accident.csv")
+acc2014 <- read.dbf("f_2014/accident.dbf")
+acc2013 <- read.dbf("f_2013/accident.dbf")
+```
+
+
+read in distract files
+```{r}
+dis2017 <- read.csv("f_2017/distract.csv")
+dis2016 <- read.csv("f_2016/distract.csv")
+dis2015 <- read.csv("f_2015/distract.csv")
+dis2014 <- read.dbf("f_2014/distract.dbf")
+dis2013 <- read.dbf("f_2013/distract.dbf")
+```
+
+
+read in drimpair files
+```{r}
+imp2017 <- read.csv("f_2017/drimpair.csv")
+imp2016 <- read.csv("f_2016/drimpair.csv")
+imp2015 <- read.csv("f_2015/drimpair.csv")
+imp2014 <- read.dbf("f_2014/drimpair.dbf")
+imp2013 <- read.dbf("f_2013/drimpair.dbf")
+```
+
+read in factor files
+```{r}
+fac2017 <- read.csv("f_2017/factor.csv")
+fac2016 <- read.csv("f_2016/factor.csv")
+fac2015 <- read.csv("f_2015/factor.csv")
+fac2014 <- read.dbf("f_2014/factor.dbf")
+fac2013 <- read.dbf("f_2013/factor.dbf")
+```
+
+
+Add key (sometimes years are null, so hardcode this)
+```{r}
+acc2017 = mutate(acc2017,
+   KEY = paste("2017", ST_CASE, sep = '_'))
+acc2016 = mutate(acc2016,
+   KEY = paste("2016", ST_CASE, sep = '_'))
+acc2015 = mutate(acc2015,
+   KEY = paste("2015", ST_CASE, sep = '_'))
+acc2014 = mutate(acc2014,
+   KEY = paste("2014", ST_CASE, sep = '_'))
+acc2013 = mutate(acc2013,
+   KEY = paste("2013", ST_CASE, sep = '_'))
+```
+
+```{r}
+fac2017 = mutate(fac2017,
+   KEY = paste("2017", ST_CASE, sep = '_'))
+fac2016 = mutate(fac2016,
+   KEY = paste("2016", ST_CASE, sep = '_'))
+fac2015 = mutate(fac2015,
+   KEY = paste("2015", ST_CASE, sep = '_'))
+fac2014 = mutate(fac2014,
+   KEY = paste("2014", ST_CASE, sep = '_'))
+fac2013 = mutate(fac2013,
+   KEY = paste("2013", ST_CASE, sep = '_'))
+```
+
+```{r}
+dis2017 = mutate(dis2017,
+   KEY = paste("2017", ST_CASE, sep = '_'))
+dis2016 = mutate(dis2016,
+   KEY = paste("2016", ST_CASE, sep = '_'))
+dis2015 = mutate(dis2015,
+   KEY = paste("2015", ST_CASE, sep = '_'))
+dis2014 = mutate(dis2014,
+   KEY = paste("2014", ST_CASE, sep = '_'))
+dis2013 = mutate(dis2013,
+   KEY = paste("2013", ST_CASE, sep = '_'))
+```
+
+```{r}
+imp2017 = mutate(imp2017,
+   KEY = paste("2017", ST_CASE, sep = '_'))
+imp2016 = mutate(imp2016,
+   KEY = paste("2016", ST_CASE, sep = '_'))
+imp2015 = mutate(imp2015,
+   KEY = paste("2015", ST_CASE, sep = '_'))
+imp2014 = mutate(imp2014,
+   KEY = paste("2014", ST_CASE, sep = '_'))
+imp2013 = mutate(imp2013,
+   KEY = paste("2013", ST_CASE, sep = '_'))
+```
+
+combine!
+```{r}
+acc <- smartbind(acc2017,acc2016,acc2015,acc2014,acc2013)
+```
+
+```{r}
+imp <- smartbind(imp2017,imp2016,imp2015,imp2014,imp2013)
+```
+
+```{r}
+dis <- smartbind(dis2017,dis2016,dis2015,dis2014,dis2013)
+```
+
+```{r}
+fac <- smartbind(fac2017,fac2016,fac2015,f2014,fac2013)
+```
+
+```{r}
+write.csv(acc, file = "comboacc.csv")
+write.csv(imp, file = "combofac.csv")
+write.csv(dis, file = "comboimp.csv")
+write.csv(fac, file = "combodis.csv")
+```
+
+
+
+
+
+
