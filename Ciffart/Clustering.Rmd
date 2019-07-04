@@ -1,0 +1,82 @@
+---
+title: "Clustering"
+author: "Ciffart Group"
+date: "June 24, 2019"
+output: html_document
+---
+
+```{r packages, include = F, warnings = F}
+
+# Packages for performing analyses
+pkgs <- c('ggplot2', 'dplyr', 'cluster', 'factoextra', 'caret', 'klaR', 'FactoMineR')
+
+# Installs all of the packages
+lapply(pkgs, require, character.only = TRUE)
+
+# Removing package variable
+rm(pkgs)
+
+```
+
+The working directory is unfortunately local, but it is pulling from the git repo
+
+```{r Directory}
+
+print(paste0('Current Working Directory: ', getwd()))
+
+# change directory for loading data
+setwd("~/NYCTrafficCollisions/data/FARS2017NationalCSV")
+
+```
+
+Using file paths to load data for later joining
+
+```{r Data Loads}
+
+acc <- read.csv('accident.csv')
+#dis <- read.csv('Distract.csv')
+#factors <- read.csv('Factor.csv')
+aux <- read.csv('acc_aux.csv')
+
+```
+
+
+```{r Check Structure}
+str(acc)
+str(aux)
+
+# Similar columns in both data sets need to be removed
+same_col <- names(aux)[names(aux) %in% names(acc)]
+same_col <- setdiff(same_col, "ST_CASE")
+
+# Removing Similar Columns
+aux_cln <- aux[, setdiff(names(aux), same_col)]
+
+```
+
+The is not an official script for merging data across years. This is a quick and dirty merge. We will want to be able to do this programmatically.
+
+```{r Joining Data}
+
+# Check Uniqueness of index variable -- good
+length(levels(as.factor(acc$ST_CASE)))
+
+df <- left_join(acc, aux_cln, by = "ST_CASE")
+
+# looking at merged set
+head(df, n = 10)
+str(df)
+```
+
+Eventually, we will want to go through and exclude variables with zero variance
+```{r Zero Variance}
+
+
+```
+
+
+Eventually, we will want to figure out whether we can use dimension reduction techniques to isolate 'important variables'
+
+Quickly for POC, let's use a subset of variables and K-Modes clustering algorithm
+
+```{r cluster}
