@@ -1,0 +1,209 @@
+Variable,Coding,Code Name,Other Coding,Other Coding Names
+MAN_COLL,0,Not a Collision with a Motor Vehicle In-Transport,,
+MAN_COLL,1,Front-to-Rear,,
+MAN_COLL,2,Front-to-Front,,
+MAN_COLL,6,Angle,,
+MAN_COLL,7,Sideswipe-Same Direction,,
+MAN_COLL,8,Sideswipe-Opposite Direction,,
+MAN_COLL,9,Rear-to-Side,,
+MAN_COLL,10,Rear-to-Rear,,
+MAN_COLL,11,Other,,
+MAN_COLL,98,Not Reported,,
+MAN_COLL,99,Unknown,,
+STATE,1,Alabama ,,
+STATE,2,Alaska ,,
+STATE,4,Arizona ,,
+STATE,5,Arkansas ,,
+STATE,6,California ,,
+STATE,8,Colorado ,,
+STATE,9,Connecticut ,,
+STATE,10,Delaware ,,
+STATE,11,District of Columbia,,
+STATE,12,Florida ,,
+STATE,13,Georgia ,,
+STATE,15,Hawaii ,,
+STATE,16,Idaho ,,
+STATE,17,Illinois,,
+STATE,18,Indiana ,,
+STATE,19,Iowa ,,
+STATE,20,Kansas ,,
+STATE,21,Kentucky ,,
+STATE,22,Louisiana ,,
+STATE,23,Maine ,,
+STATE,24,Maryland ,,
+STATE,25,Massachusetts ,,
+STATE,26,Michigan ,,
+STATE,27,Minnesota ,,
+STATE,28,Mississippi ,,
+STATE,29,Missouri ,,
+STATE,30,Montana,,
+STATE,31,Nebraska ,,
+STATE,32,Nevada ,,
+STATE,33,New Hampshire ,,
+STATE,34,New Jersey ,,
+STATE,35,New Mexico ,,
+STATE,36,New York ,,
+STATE,37,North Carolina ,,
+STATE,38,North Dakota ,,
+STATE,39,Ohio ,,
+STATE,40,Oklahoma ,,
+STATE,41,Oregon ,,
+STATE,42,Pennsylvania,,
+STATE,43,Puerto Rico,,
+STATE,44,Rhode Island ,,
+STATE,45,South Carolina ,,
+STATE,46,South Dakota ,,
+STATE,47,Tennessee ,,
+STATE,48,Texas ,,
+STATE,49,Utah ,,
+STATE,50,Vermont ,,
+STATE,51,Virginia ,,
+STATE,52,Virgin Islands,,
+STATE,53,Washington ,,
+STATE,54,West Virginia ,,
+STATE,55,Wisconsin ,,
+STATE,56,Wyoming,,
+HARM_EV,1,Rollover/Overturn,1,Non-Collision Harmful Event
+HARM_EV,2,Fire/Explosion,1,Non-Collision Harmful Event
+HARM_EV,3,Immersion or Partial Immersion,1,Non-Collision Harmful Event
+HARM_EV,4,Gas Inhalation,1,Non-Collision Harmful Event
+HARM_EV,51,Jackknife (harmful to this vehicle),1,Non-Collision Harmful Event
+HARM_EV,6,Injured in Vehicle (Non-Collision),1,Non-Collision Harmful Event
+HARM_EV,44,"Pavement Surface Irregularities (Ruts, Potholes, Grates, etc.)",1,Non-Collision Harmful Event
+HARM_EV,7,Other Non-Collision,1,Non-Collision Harmful Event
+HARM_EV,16,Thrown or Falling Object,1,Non-Collision Harmful Event
+HARM_EV,72,Cargo/Equipment Loss or Shift (harmful to this vehicle),1,Non-Collision Harmful Event
+HARM_EV,5,Fell/Jumped from Vehicle,1,Non-Collision Harmful Event
+HARM_EV,12,Motor Vehicle In-Transport,2,Collision with Motor Vehicle In-Transport
+HARM_EV,54,"Motor Vehicle In-Transport Strikes or is Struck by Cargo, Persons, or Objects Set-in-Motion
+from/by Another Motor Vehicle In-Transport",2,Collision with Motor Vehicle In-Transport
+HARM_EV,55,Motor Vehicle in Motion Outside the Trafficway,2,Collision with Motor Vehicle In-Transport
+HARM_EV,8,Pedestrian,3,Collision with Object Not Fixed
+HARM_EV,9,Pedalcyclist,3,Collision with Object Not Fixed
+HARM_EV,10,Railway Vehicle,3,Collision with Object Not Fixed
+HARM_EV,74,Road,3,Collision with Object Not Fixed
+HARM_EV,11,Live Animal,3,Collision with Object Not Fixed
+HARM_EV,49,Ridden Animal or Animal Drawn Conveyance,3,Collision with Object Not Fixed
+HARM_EV,18,Other Object (Not Fixed),3,Collision with Object Not Fixed
+HARM_EV,15,Non-Motorist On Personal Conveyance,3,Collision with Object Not Fixed
+HARM_EV,14,Parked Motor Vehicle,3,Collision with Object Not Fixed
+HARM_EV,45,Working Motor Vehicle,3,Collision with Object Not Fixed
+HARM_EV,73,Object That Had Fallen from Motor Vehicle In-Transport,3,Collision with Object Not Fixed
+HARM_EV,91,Unknown Object Not Fixed,3,Collision with Object Not Fixed
+HARM_EV,17,Boulder,4,Collision with Fixed Object
+HARM_EV,19,Building,4,Collision with Fixed Object
+HARM_EV,58,Ground,4,Collision with Fixed Object
+HARM_EV,20,Impact Attenuator/Crash Cushion,4,Collision with Fixed Object
+HARM_EV,50,Bridge Overhead Structure,4,Collision with Fixed Object
+HARM_EV,21,Bridge Pier or Support,4,Collision with Fixed Object
+HARM_EV,23,Bridge Rail (Includes Parapet),4,Collision with Fixed Object
+HARM_EV,24,Guardrail Face,4,Collision with Fixed Object
+HARM_EV,52,Guardrail End,4,Collision with Fixed Object
+HARM_EV,25,Concrete Traffic Barrier,4,Collision with Fixed Object
+HARM_EV,57,Cable Barrier,4,Collision with Fixed Object
+HARM_EV,26,Other Traffic Barrier,4,Collision with Fixed Object
+HARM_EV,59,Traffic Sign Support,4,Collision with Fixed Object
+HARM_EV,46,Traffic Signal Support,4,Collision with Fixed Object
+HARM_EV,30,Utility Pole/Light Support,4,Collision with Fixed Object
+HARM_EV,31,"Other Post, Other Pole, or Other Supports",4,Collision with Fixed Object
+HARM_EV,32,Culvert,4,Collision with Fixed Object
+HARM_EV,33,Curb,4,Collision with Fixed Object
+HARM_EV,34,Ditch,4,Collision with Fixed Object
+HARM_EV,35,Embankment,4,Collision with Fixed Object
+HARM_EV,38,Fence,4,Collision with Fixed Object
+HARM_EV,39,Wall,4,Collision with Fixed Object
+HARM_EV,40,Fire Hydrant,4,Collision with Fixed Object
+HARM_EV,41,Shrubbery,4,Collision with Fixed Object
+HARM_EV,42,Tree (Standing Only),4,Collision with Fixed Object
+HARM_EV,48,Snow Bank,4,Collision with Fixed Object
+HARM_EV,53,Mail Box,4,Collision with Fixed Object
+HARM_EV,43,Other Fixed Object,4,Collision with Fixed Object
+HARM_EV,93,Unknown Fixed Object,4,Collision with Fixed Object
+RELJCT2,0,No,1,Within Interchange Area
+RELJCT2,1,Yes,1,Within Interchange Area
+RELJCT2,8,Not Reported,1,Within Interchange Area
+RELJCT2,9,Unknown,1,Within Interchange Area
+RELJCT2,1,Non-Junction,2,Specific Location
+RELJCT2,2,Intersection,2,Specific Location
+RELJCT2,3,Intersection-Related,2,Specific Location
+RELJCT2,5,Entrance/Exit Ramp Related,2,Specific Location
+RELJCT2,20,Entrance/Exit Ramp,2,Specific Location
+RELJCT2,6,Railway Grade Crossing,2,Specific Location
+RELJCT2,7,Crossover-Related,2,Specific Location
+RELJCT2,4,Driveway Access,2,Specific Location
+RELJCT2,8,Driveway Access Related,2,Specific Location
+RELJCT2,16,Shared-Use Path Crossing,2,Specific Location
+RELJCT2,17,Acceleration/Deceleration Lane,2,Specific Location
+RELJCT2,18,Through Roadway,2,Specific Location
+RELJCT2,19,Other location within interchange area,2,Specific Location
+RELJCT2,98,Not Reported,2,Specific Location
+RELJCT2,99,Unknown,2,Specific Location
+TYP_INT,1,Not an Intersection,,
+TYP_INT,2,Four-Way Intersection,,
+TYP_INT,3,T-Intersection,,
+TYP_INT,4,Y-Intersection,,
+TYP_INT,5,Traffic Circle,,
+TYP_INT,6,Roundabout,,
+TYP_INT,7,"Five-Point, or More",,
+TYP_INT,10,L-Intersection,,
+TYP_INT,98,Not Reported,,
+TYP_INT,99,Unknown,,
+LGT_COND,1,Daylight,,
+LGT_COND,2,Dark - Not Lighted,,
+LGT_COND,3,Dark - Lighted,,
+LGT_COND,6,Dark - Unknown Lighting,,
+LGT_COND,4,Dawn,,
+LGT_COND,5,Dusk,,
+LGT_COND,7,Other,,
+LGT_COND,8,Not Reported,,
+LGT_COND,9,Unknown,,
+WEATHER,0,No Additional Atmospheric Conditions,,
+WEATHER,1,Clear,,
+WEATHER,10,Cloudy,,
+WEATHER,2,Rain,,
+WEATHER,3,Sleet or Hail,,
+WEATHER,12,Freezing Rain or Drizzle,,
+WEATHER,4,Snow,,
+WEATHER,11,Blowing Snow,,
+WEATHER,5,"Fog, Smog, Smoke",,
+WEATHER,6,Severe Crosswinds,,
+WEATHER,7,"Blowing, Sand, Soil, Dirt",,
+WEATHER,8,Other,,
+WEATHER,98,Not Reported,,
+WEATHER,99,Unknown,,
+ROUTE,1,Interstate,,
+ROUTE,2,U.S. Highway,,
+ROUTE,3,State Highway,,
+ROUTE,4,County Road,,
+ROUTE,5,Local Street,,
+ROUTE,6,Local Street - Municipality,,
+ROUTE,7,Local Street - Frontage Road,,
+ROUTE,8,Other,,
+ROUTE,9,Unknown,,
+CF1,0,None,,
+CF1,1,"Inadequate Warning of Exits, Lanes Narrowing, Traffic Controls, etc.",,
+CF1,2,Shoulder Design or Condition,,
+CF1,3,Other Maintenance or Construction-Created Condition,,
+CF1,4,No or Obscured Pavement Marking,,
+CF1,5,Surface Under Water,,
+CF1,6,"Inadequate Construction or Poor Design of Roadway, Bridge, etc.",,
+CF1,7,"Surface Washed Out (caved-in, road slippage)",,
+CF1,13,Aggressive Driving / Road Rage by Non-Contact Vehicle Driver,,
+CF1,14,"Motor Vehicle Struck by Falling Cargo, or Something That Came Loose from, Or Something That
+was Set-in-Motion by a Vehicle.",,
+CF1,15,"Non-Occupant Struck by Falling Cargo, or Something That Came Loose from, or Something that
+was Set-in-Motion by a Vehicle",,
+CF1,16,Non-Occupant Struck Vehicle,,
+CF1,18,Vehicle Set-in-Motion by Non-Driver,,
+CF1,18,Date of Crash and Date of EMS Notification Were Not the Same Day,,
+CF1,19,Recent Previous Crash Scene Nearby,,
+CF1,20,Police Pursuit Involved,,
+CF1,21,Within Designated School Zone,,
+CF1,22,Speed Limit is a Statutory Limit as Recorded or was Determined as This State’s “Basic Rule”,,
+CF1,23,Indication of a Stalled/Disabled Vehicle,,
+CF1,24,Unstabilized Situation Began and All Harmful Events Occurred Off of the Roadway,,
+CF1,25,Toll Booth / Plaza Related,,
+CF1,26,Backup Due to Prior Non-Recurring Incident,,
+CF1,27,Backup Due to Prior Crash,,
+CF1,28,Backup Due to Regular Congestion,,
+CF1,99,Unknown,,

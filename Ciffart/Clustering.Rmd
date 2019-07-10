@@ -24,19 +24,30 @@ The working directory is unfortunately local, but it is pulling from the git rep
 
 print(paste0('Current Working Directory: ', getwd()))
 
-# change directory for loading data
-setwd("~/NYCTrafficCollisions/data/FARS2017NationalCSV")
-
 ```
 
 Using file paths to load data for later joining
 
 ```{r Data Loads}
 
+# change directory for loading data
+setwd("~/NYCTrafficCollisions/data/FARS2017NationalCSV")
+
+# Accident Details
 acc <- read.csv('accident.csv')
-#dis <- read.csv('Distract.csv')
-#factors <- read.csv('Factor.csv')
+
+# Distraction
+dis <- read.csv('Distract.csv')
+
+# Factors
+factors <- read.csv('Factor.csv')
+
+# Auxiliary
 aux <- read.csv('acc_aux.csv')
+
+# cevent
+
+cevent <- read.csv('cevent.csv')
 
 ```
 
@@ -70,13 +81,146 @@ str(df)
 
 Eventually, we will want to go through and exclude variables with zero variance
 ```{r Zero Variance}
+str(df)
+
+```
+
+Univariate EDA
+
+```{r Generate Univariate Dist.}
+
+histo_fx <- function (data, var_name = "varname") {
+    # ggplot uses different calls for continuous and discrete variables
+    if(is.factor(data[,var_name]) == T){
+        ggplot(data = data, aes(x = data[,var_name])) + geom_bar() +
+        ggtitle(paste0(var_name, " Histogram")) + xlab(var_name) + 
+        theme(plot.title = element_text(hjust = 0.5))
+      
+    }
+    # Continuous variable
+    else {
+    ggplot(data = data, aes(x = data[,var_name])) + geom_histogram() +
+    ggtitle(paste0(var_name, " Histogram")) + xlab(var_name) + 
+    theme(plot.title = element_text(hjust = 0.5))
+    }
+}
+
+col_names <- colnames(df)
+
+for(i in 1:length(col_names)){
+  print(histo_fx(df, col_names[i]))
+  
+}
+
+is.factor(df$HOUR)
+
+```
+
+Accidents happen in the states with the most people. The top 8 states are 8 of the top 9 most populated states in America; New York was the only state in the top 9 not to appear in the top 8 states.
+
+At least 50% of fatal accidents occur with only one vehicle involved in the accident. We should definitely get a better understanding of this. Has this changed over time lending credence to more distractions? Do the single car accidents have a different cause? Do they occur in different states vs. the other multi-car accidents?
+
+High percentage of accidents involve pedestrains, just under 7000 deaths (crazy!!!). What can we say about this? Location and timing would be a great start.
+
+Basic uniform distribution on DAY on which an accident occurs
+
+Month is interesting, because it suggests that the summer is one of the worst times to drive. Most people's intution would say that the winter would lead to more accidents due to inclement road conditions. Are there state effects for Month?
+
+Hour. Certain times of day contain more accidents. 0th hour is interesting. And anything rush hour to 9pm.
+
+Minute is F**, since you can see that the there are too mnay times that end with 0 or 5, meaning estimates were made.
+
+Rural/Urban: only 14% more deadly accidents occur in urban areas.
+
+Route: State highways & Local Street - Municipality are leaders in this category.
+  Questions: Love to see this by State, as a proportion of total fatalities.
+
+HARM_EV is super interesting. You do not want to roll, hit another car, hit a curb, or a tree. Maybe the location and timing of these is interesting? Also, interactions with a ton of other variables.
+
+MAN_COLL combined with HARM_EV is necessary. Think of this as manner of the collision
+
+# Missing Data comments
+1. There are 262 observations without a time.
+2. There are 1935 observations whose route is either unknown or other.
+3. 
+
+
+# Variables we can likley safely ignore
+1. MILEPT - nearest milepoint to the crash
+2. SP_JUR - special jurisdiction for the road
+
+# Variables we need to get the code names into a 'joinable' format
+1. HARM_EV
+2. MAN_COLL
+3. STATE
+
+```{r Group Bys}
+str(df)
+df %>% group_by(WEATHER) %>% summarise(n = n())
+summary(df$VE_TOTAL)
+
+
+df %>% filter(ROUTE == 3) %>%
+  group_by(STATE) %>%
+  summarise(n = n())
 
 
 ```
 
 
-Eventually, we will want to figure out whether we can use dimension reduction techniques to isolate 'important variables'
 
-Quickly for POC, let's use a subset of variables and K-Modes clustering algorithm
+## Bivariate EDA
 
-```{r cluster}
+```{r}
+
+ggplot(data = df, aes(x = MONTH, fill = as.factor(STATE))) + geom_histogram()
+
+
+```
+
+# Bivariate Categorical Statistical Tests
+
+
+```{r Chi-Square Tests}
+
+# Pairwise Chi Square Tests of a List of Variable Names
+chisq <- function(varlist, data) {
+  for(i in varlist){
+    for(j in varlist){
+      testresult <- chisq.test(data[,i], data[,j])
+      print(paste("Chi-Sq. Test Bet. ", i," & " ,j, testresult))
+    } # i for loop close
+  } # j for loop close
+} # function close
+
+chisq(factors, df)
+
+
+```
+
+Looking at multiple correspondence analysis to determine which of the factor variables we want to keep...for now.
+
+```{r MCA}
+# First we need to narrow the data set to categorical variables
+
+factors <- c("COUNTY", "CITY", "ROUTE", "RUR_URB", "RD_OWNER", "SP_JUR", "NHS",
+             "RELJCT1", "RELJCT2", "TYP_INT", "REL_ROAD", "WRK_ZONE", "LGT_COND", "WEATHER")
+
+# Limit the data set to those categorical variables
+df_factors <- df[, factors]
+
+# Loop through to turn the categorical variables into factors, necessary for MCA analysis
+for(i in 1:dim(df_factors)[2]){
+  df_factors[,i] <- as.factor(df_factors[,i])
+}
+
+# Check that loop achieved correct behavior
+str(df_factors)
+
+# multiple correspondance analysis
+FactoMineR::MCA(df_factors, ncp = 3, graph = F)
+
+fviz_mca_var(res.mca, choice = "mca.cor", 
+            repel = TRUE, # Avoid text overlapping (slow)
+            ggtheme = theme_minimal())
+```
