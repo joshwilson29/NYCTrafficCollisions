@@ -34,7 +34,6 @@ def getalldata(filename='accident.csv'):
     dftmp=dftmp.reset_index().drop('index',axis=1)
     return dftmp
 
-
 # Please ignore this function for now - need to be edited to figure out how we'll deal with multiple columns
 def mergedata(dfmain,filename='distract.csv',columns=[]):
     years=range(2015,2018)
@@ -49,7 +48,6 @@ def mergedata(dfmain,filename='distract.csv',columns=[]):
     dftmp=dftmp.set_index('id')
     return dfmain.merge(dftmp)
 
-
 def cyclic(dftmp,columns=['ARR_HOUR'],periods=[24]):
     for c,p in zip(columns,periods):
         tgt=dftmp[c]
@@ -58,11 +56,6 @@ def cyclic(dftmp,columns=['ARR_HOUR'],periods=[24]):
         dftmp[c+'_sin_cycle']=np.sin(2*np.pi*tgt/p)
         dftmp[c+'_cos_cycle']=np.cos(2*np.pi*tgt/p)
         
-def create_plot_labels(dforig):
-    dftmp=dforig.copy()
-    dftmp['plot_labels']=dftmp.sig*dftmp.cluster
-    return dftmp
-
 def removeNoHourAndMinutes(dforig):
     dftmp=dforig.copy()
     crit=(dftmp.hour<24) & (dftmp.minute<60)
@@ -74,11 +67,17 @@ def createTimestamp(dforig):
     dftmp['tstamp']=[pd.Timestamp(year=v.year,month=v.month,day=v.day,hour=v.hour,minute=v.minute) for i,v in dftmp.iterrows()]
     return dftmp
     
-def removeUneededAccidentColumns(dforig):
+def removeUneededColumns(dforig,filename='accident.csv'):
+    '''
+    Removes uneeded columns from the dataframe accoding to a specified file. The function used to get the columns is getVarlist. filename should be the data filename to filter.
+    See getVarlist() to see how it gets the list of variables for each data file from the data specification file.
+
+    Returns dataframe with the specified variables
+    '''
     dftmp=dforig.copy()
-    return dftmp.loc[:,['id','tstamp','state','longitud','latitude','peds','day','month','year','day_week',
-                         'hour', 'minute','route','harm_ev','man_coll','reljct2','typ_int',
-                         'lgt_cond','weather','cf1','drunk_dr']]
+    key=filename.split('.')[0]
+    v=getVarlist()
+    return dftmp.loc[:,v[key]]
 
 def calculateTopNCatPct(dforig,N=5):
     '''
@@ -117,7 +116,7 @@ class convexhull(ConvexHull):
 
         return hull.find_simplex(p)>=0
 
-def cluster_all_points(dfsrc,filter_rows,LongitudeLatitude=LOCS,hdbscan_params={'min_cluster_size':30,'gen_min_span_tree':True, 'metric':'manhattan'}):
+def cluster_all_points(dfsrc,filter_rows,LongitudeLatitude=LOCS,hdbscan_params={'min_cluster_size':30,'gen_min_span_tree':True, 'metric':'manhattan','min_samples':30}):
     '''
     This function takes a table with longitude, latitude, clusters them using hdbscan, then generate the cluster boundaries
     using a convex hull and label all points in the convex hull to the appropriate cluster. Note that cluster = -1 indicates that it is not
@@ -151,7 +150,7 @@ def cluster_all_points(dfsrc,filter_rows,LongitudeLatitude=LOCS,hdbscan_params={
                     # Can't form a hull because there's less than 3 points
                     if len(dftgt.longitud.unique()) < 3 and len(dftgt.latitude.unique()) < 3:
                         for lon,lat in zip (dftgt.longitud.unique(),dftgt.latitude.unique()):
-                            dftmp.loc[(dftmp.longitud==lon) & (dftmp.latitude==lat),'clusters']=i
+                            dftmp.loc[(dftmp.longitud==lon) & (dftmp.latitude==lat),'cluster']=i
                     else:
                         print(f'Cluster {i}: QHULL ERROR NOT ONLY 1 point - returning dataframe')
                         return(dftgt)
