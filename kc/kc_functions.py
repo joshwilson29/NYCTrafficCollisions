@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd 
 import matplotlib.pyplot as plt
 import os
+from ast import literal_eval
 from scipy.spatial import ConvexHull
 from scipy.spatial import Delaunay
 from scipy.spatial.qhull import QhullError
@@ -21,12 +22,16 @@ LOCS=['longitud','latitude']
 def cleanLocs(dftmp):
     return dftmp.loc[(dftmp.latitude<=77) & (dftmp.longitud<=999),:]
 
-def getalldata(filename='accident.csv'):
+def getalldata(filename='accident.csv',prefix='../data/'):
+    '''
+    grab all files from each year and merges it with an id
+    in format (prefix)/(year)/(filename.csv)
+    '''
     years=range(2015,2018)
-    dftmp=pd.read_csv('data/2014/'+filename,encoding='latin-1')
+    dftmp=pd.read_csv(prefix + '/2014/'+filename,encoding='latin-1')
     dftmp['id']=dftmp.ST_CASE.apply(lambda x: "id_2014."+str(int(x)))
     for i in years:
-        dfz=pd.read_csv('data/'+str(i)+'/'+filename,encoding='latin-1')
+        dfz=pd.read_csv(prefix+str(i)+'/'+filename,encoding='latin-1')
         dfz['id']=dfz.ST_CASE.apply(lambda x: "id_" +  str(i) + "." + str(int(x)))
         dftmp=dftmp.append(dfz,sort=False) 
     dftmp.columns=[ i.lower() for i in dftmp.columns.tolist()]
@@ -36,6 +41,9 @@ def getalldata(filename='accident.csv'):
 
 # Please ignore this function for now - need to be edited to figure out how we'll deal with multiple columns
 def mergedata(dfmain,filename='distract.csv',columns=[]):
+    '''
+    Please do not use this.
+    '''
     years=range(2015,2018)
     dftmp=pd.read_csv('data/2014/'+filename.lower())
     dftmp.columns=[i.lower for i in dftmp.columns.tolist()]
@@ -49,12 +57,16 @@ def mergedata(dfmain,filename='distract.csv',columns=[]):
     return dfmain.merge(dftmp)
 
 def cyclic(dftmp,columns=['ARR_HOUR'],periods=[24]):
+    '''
+    calculates the cylcis variables, of the columns, with specified periods
+    '''
     for c,p in zip(columns,periods):
         tgt=dftmp[c]
         if min(tgt)!=0:
             tgt=tgt-min(tgt)
         dftmp[c+'_sin_cycle']=np.sin(2*np.pi*tgt/p)
         dftmp[c+'_cos_cycle']=np.cos(2*np.pi*tgt/p)
+    return dftmp
         
 def removeNoHourAndMinutes(dforig):
     dftmp=dforig.copy()
@@ -63,24 +75,30 @@ def removeNoHourAndMinutes(dforig):
     return dftmp
 
 def createTimestamp(dforig):
+    '''
+    create timestamp columns -- used columns from accident.csv
+    '''
     dftmp=dforig.copy()
     dftmp['tstamp']=[pd.Timestamp(year=v.year,month=v.month,day=v.day,hour=v.hour,minute=v.minute) for i,v in dftmp.iterrows()]
     return dftmp
     
-def removeUnneededColumns(dforig,filename='accident.csv',additional_columns=[]):
+def removeUnneededColumns(dforig,filename='accident.csv',keep_columns=[],getVarlist_params={'filename':'../ListofVariables.xlsx'}):
     '''
     Removes uneeded columns from the dataframe accoding to a specified file. The function used to get the columns is getVarlist. filename should be the data filename to filter.
     See getVarlist() to see how it gets the list of variables for each data file from the data specification file.
 
-    additional_columns are additional columns to keep
+    keep_columns are additional columns to keep.
+
+    get
+
 
     Returns dataframe with the specified variables
     '''
     dftmp=dforig.copy()
     key=filename.split('.')[0]
-    v=getVarlist()
+    v=getVarlist(**getVarlist_params)
     l=v[key]
-    l.extend(additional_columns)
+    l.extend(keep_columns)
     return dftmp.loc[:,l]
 
 def calculateTopNCatPct(dforig,N=5):
@@ -96,7 +114,7 @@ def calculateTopNCatPct(dforig,N=5):
 
 def binarizeVariables(dforig,variable_list=['peds','route'],TopN=5):
     '''
-    binarizes variables
+    binarizes variables in the variables list, only binarizest the TopN values. To binarize all values, set a very high TopN
     '''
     dftmp=dforig.copy()
     for col in variable_list:
@@ -280,13 +298,13 @@ def plot_map(dfsrc,color='navy',ON_points=False,title="US Scatter Map"):
     show(p)
     
 # EDA Functions
-def getVarlist(filename='ListofVariables.xlsx',columns='Variables'):
+def getVarlist(filename='../ListofVariables.xlsx'):
     '''
     reads the list of data files to load from the filename and loads the variables wanted as indicated from filename into a dictionary
 
     Returns - dictionary with filenames as the key ('accident','cevent',etc) and the list of variables wanted from that dat file
     '''
-    dftmp=pd.read_excel('ListofVariables.xlsx', sheet_name='Variables')
+    dftmp=pd.read_excel(filename, sheet_name='Variables')
     varlist={}
     for i in dftmp['CSV Name'].unique():
         varlist[i.lower()]=[i.lower() for i in dftmp.loc[dftmp['CSV Name']==i,'Variable'].tolist()]
@@ -319,10 +337,77 @@ def createHistograms(filename='accident.csv'):
     show(column(l))
     return None
 
+# Mapping Functions
+def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.xlsx',sheet='Variables'):
+    '''
+    returns a multi-level dictionary 1 key=variable name, the value is another dictionary of key = code, value = to be recoded as
+    see kc_data_dict.xlsx for format
+    returns dictionary of {'filename':{'value we want to code':'value in the FARS dataset (accepts commas, ex 28,27, and 30:90 to indicate 30 to 90 sequentially',...}. Effectively, the results createDataDictForTranslation() output. See the function for more info.
+
+    Return example {'p_crash1':{'9':[99,98],'10':[10],'8':[1,2,3,4,5]}} --> the kc_data_dict.xlsx  in excel would be  File='vehicle',Variable='p_crash1',type='Category',(code=9, Coe Notes=99,98), (code=10, Code Notes = 10), (code=8, Code Notes=1:5)
+    '''
+    dftmp=pd.read_excel(filename,sheet_name=sheet)
+    primdict={}
+    dftmp=dftmp.loc[dftmp.File==datafile_set,:]
+    for i in dftmp.Variable.unique():
+        dftmp2=dftmp.loc[dftmp.Variable==i,:]
+        d={}
+        l=[]
+        l.append('not in')
+        for code,cn in zip(dftmp2.Code,dftmp2['Code Notes']):
+                if not np.isnan(code):
+                    code=str(int(code))
+                    if re.match('[0-9]+:[0-9]+',str(cn)) is not None: # it's a range
+                        beg,end=cn.split(':')
+                        cn=[i for i in range(int(beg),int(end)+1)]
+                    else:
+                        cn=literal_eval(str(cn))
+                    if type(cn) is int:
+                        if cn != 9999:
+                            l.append(cn)
+                        d[code]=[cn]
+                    else:
+                        d[code]=cn
+                        l.extend(cn)
+        for k,v in d.items():
+            if v[0]==9999:
+                d[k]=l
+        primdict[i]=d
+    return primdict
+
+def translateVarsFromDict(dforig,transDict):
+    '''
+    dforig - the dataframe to translate
+    transdict - dictioary of {'filename':{'value we want to code':'value in the FARS dataset (accepts commas, ex 28,27, and 30:90 to indicate 30 to 90 sequentially',...}. Effectively, the results createDataDictForTranslation() output. See the function for more info.
+    '''
+
+    dftmp=dforig.copy()
+    for colname,origToNewVal in transDict.items():
+        for k,v in origToNewVal.items():
+            if str(v[0]).lower()=='not in':
+                dftmp.loc[[i not in v for i in dftmp[colname]],colname]=int(k)
+            else:
+                dftmp.loc[[i in v for i in dftmp[colname]],colname]=int(k)
+    return dftmp
+
 def pivot_and_chunk(dforig,pivot_col='veh_no',idcol='id'):
+    '''
+    make the pivot_col column values into a heading - flattens the column MultiIndex. idcol does not get expanded. All other columns expands.
+
+    '''
     dftmp=dforig.copy()
     dftmp=dftmp.pivot(index=idcol,columns=pivot_col)
     dftmp=dftmp.fillna(0)
-    dftmp.columns=['$'.join(col).strip() if col[1]!='' else col[0] for col in dftmp.columns.values]
-    dftmp=dftmp.rename({'id.':'id'},axis=1)
+    dftmp.columns=['$'.join(col).strip() if str(col[1])!='' else str(col[0]) for col in dftmp.columns.values]
     return dftmp
+
+def getSourceFileFromVariable(variablename,data_dict_file='kc_data_dict.xlsx'):
+    '''
+    returns the source files from the kc_data_dict.xlsx file - the 'File' column
+    '''
+    dftmp=pd.read_excel(data_dict_file,sheet_name='Variables')
+    try:
+        return dftmp.loc[dftmp.Variable==variablename,'File'].iloc[0]
+    except IndexError as e:
+        print(f'{variablename} does not exist in {data_dict_file}. Returning None.')
+        return None
