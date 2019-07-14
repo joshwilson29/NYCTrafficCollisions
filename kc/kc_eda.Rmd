@@ -1,0 +1,53 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+eda = function(sep,sep2,long,lat,var,namesep,namesep2,namelong,namelat,namevar,k) {
+  dfplot=data.frame(c(sep,var))
+  names(dfplot) = c('group','target')
+  p = ggplot(dfplot,aes(x=factor(group),fill=factor(target)))   + geom_histogram(stat='count')  +xlab(namesep)   + guides(fill=guide_legend(title=namevar))
+  print(p)
+  
+  dfplot=data.frame(c(sep,sep2,var))
+  names(dfplot) = c('sep1','sep2','var')
+  
+  # dfplot = dfplot %>% group_by(sep1,sep2) %>% mutate('var'=sum(var)) %>% unique %>% date.frame
+  # p = ggplot(dfplot,aes(x=sep2,y=var,color=factor(sep1))) + geom_line()
+  # print(p)
+  
+  # p = ggplot(dfplot %>% group_by(sep2),aes(x=factor(sep1),y=var)) + geom_boxplot() + xlab(namesep2) + ylab(varname)
+  # print(p)
+  
+  # p = ggplot(dfplot %>% group_by(sep1),aes(x=factor(sep2),y=var)) + geom_boxplot() + xlab(namesep2) + ylab(varname)
+  # print(p) 
+  
+  # dfplot = dfplot %>% group_by(sep,sep2) %>% mutate(namevar=sum(var)) %>% data.frame()
+  # p=ggplot(dfplot,aes(x=sep2,y=var,color=factor(sep1))) + geom_line() + xlab(namesep2) + ylab(varname)
+  # print(p)
+
+  dfplot=data.frame(c(sep,long,lat,var))
+  names(dfplot) = c('sep','long','lat','var')
+  p=ggplot(dfplot[dfplot$var!=k,],aes(x=long,y=lat,color=factor(var))) + geom_point()
+  print(p) 
+  
+  dfplot=data.frame(c(sep,var))
+  names(dfplot) = c('group','target') 
+  dfplot=dfplot %>% group_by(target) %>% count() %>% data.frame %>% mutate(pct=n/dim(df)[1]) %>% data.frame
+  dfplot=df[order(dfplot$pct)]
+  names(dfplot)[1]=c(namevar)
+  dfplot=head(dfplot)
+  dfplot=dfplot[order(dfplot$pct,decreasing=True),]
+  print(head(dfplot))
+  print(sum(dfplot$pct))
+
+}
+```
+
