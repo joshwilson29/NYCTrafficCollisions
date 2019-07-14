@@ -91,7 +91,7 @@ def createTimestamp(dforig):
     dftmp['tstamp']=[pd.Timestamp(year=v.year,month=v.month,day=v.day,hour=v.hour,minute=v.minute) for i,v in dftmp.iterrows()]
     return dftmp
     
-def removeUnneededColumns(dforig,filename='accident.csv',keep_columns=[],**getVarlist_params={'filename':'../ListofVariables.xlsx'}):
+def removeUnneededColumns(dforig,filename='accident.csv',keep_columns=[],getVarlist_params={'filename':'../ListofVariables.xlsx'}):
     '''
 
     Removes uneeded columns from the dataframe accoding to a specified file. The function used to get the columns is getVarlist. filename should be the data filename to filter.
@@ -153,7 +153,7 @@ class convexhull(ConvexHull):
 
         return hull.find_simplex(p)>=0
 
-def cluster_all_points(dfsrc,filter_rows,LongitudeLatitude=LOCS,**hdbscan_params={'min_cluster_size':30,'gen_min_span_tree':True, 'metric':'manhattan','min_samples':30}):
+def cluster_all_points(dfsrc,filter_rows,LongitudeLatitude=LOCS,hdbscan_params={'min_cluster_size':30,'gen_min_span_tree':True, 'metric':'manhattan','min_samples':30}):
     '''
 
     This function takes a table with longitude, latitude, clusters them using hdbscan, then generate the cluster boundaries
