@@ -24,8 +24,10 @@ def cleanLocs(dftmp):
 
 def getalldata(filename='accident.csv',prefix='../data/'):
     '''
+
     grab all files from each year and merges it with an id
     in format (prefix)/(year)/(filename.csv)
+    
     '''
     years=range(2015,2018)
     dftmp=pd.read_csv(prefix + '/2014/'+filename,encoding='latin-1')
@@ -42,8 +44,11 @@ def getalldata(filename='accident.csv',prefix='../data/'):
 # Please ignore this function for now - need to be edited to figure out how we'll deal with multiple columns
 def mergedata(dfmain,filename='distract.csv',columns=[]):
     '''
+
     Please do not use this.
+    
     '''
+
     years=range(2015,2018)
     dftmp=pd.read_csv('data/2014/'+filename.lower())
     dftmp.columns=[i.lower for i in dftmp.columns.tolist()]
@@ -58,7 +63,9 @@ def mergedata(dfmain,filename='distract.csv',columns=[]):
 
 def cyclic(dftmp,columns=['ARR_HOUR'],periods=[24]):
     '''
+
     calculates the cylcis variables, of the columns, with specified periods
+    
     '''
     for c,p in zip(columns,periods):
         tgt=dftmp[c]
@@ -76,14 +83,17 @@ def removeNoHourAndMinutes(dforig):
 
 def createTimestamp(dforig):
     '''
+
     create timestamp columns -- used columns from accident.csv
+    
     '''
     dftmp=dforig.copy()
     dftmp['tstamp']=[pd.Timestamp(year=v.year,month=v.month,day=v.day,hour=v.hour,minute=v.minute) for i,v in dftmp.iterrows()]
     return dftmp
     
-def removeUnneededColumns(dforig,filename='accident.csv',keep_columns=[],getVarlist_params={'filename':'../ListofVariables.xlsx'}):
+def removeUnneededColumns(dforig,filename='accident.csv',keep_columns=[],**getVarlist_params={'filename':'../ListofVariables.xlsx'}):
     '''
+
     Removes uneeded columns from the dataframe accoding to a specified file. The function used to get the columns is getVarlist. filename should be the data filename to filter.
     See getVarlist() to see how it gets the list of variables for each data file from the data specification file.
 
@@ -93,6 +103,7 @@ def removeUnneededColumns(dforig,filename='accident.csv',keep_columns=[],getVarl
 
 
     Returns dataframe with the specified variables
+    
     '''
     dftmp=dforig.copy()
     key=filename.split('.')[0]
@@ -103,7 +114,9 @@ def removeUnneededColumns(dforig,filename='accident.csv',keep_columns=[],getVarl
 
 def calculateTopNCatPct(dforig,N=5):
     '''
+
     calculates top N categories
+    
     '''
     l=[]
     DO_NOT_CALC=['id','tstamp','longitud','latitude','day','month','year','day_week','hour','minute']
@@ -114,7 +127,9 @@ def calculateTopNCatPct(dforig,N=5):
 
 def binarizeVariables(dforig,variable_list=['peds','route'],TopN=5):
     '''
+
     binarizes variables in the variables list, only binarizest the TopN values. To binarize all values, set a very high TopN
+    
     '''
     dftmp=dforig.copy()
     for col in variable_list:
@@ -138,8 +153,9 @@ class convexhull(ConvexHull):
 
         return hull.find_simplex(p)>=0
 
-def cluster_all_points(dfsrc,filter_rows,LongitudeLatitude=LOCS,hdbscan_params={'min_cluster_size':30,'gen_min_span_tree':True, 'metric':'manhattan','min_samples':30}):
+def cluster_all_points(dfsrc,filter_rows,LongitudeLatitude=LOCS,**hdbscan_params={'min_cluster_size':30,'gen_min_span_tree':True, 'metric':'manhattan','min_samples':30}):
     '''
+
     This function takes a table with longitude, latitude, clusters them using hdbscan, then generate the cluster boundaries
     using a convex hull and label all points in the convex hull to the appropriate cluster. Note that cluster = -1 indicates that it is not
     in a cluster. The returned dataframe will have 1 additonal field - 'cluster', indicating the cluster it is in.
@@ -151,6 +167,7 @@ def cluster_all_points(dfsrc,filter_rows,LongitudeLatitude=LOCS,hdbscan_params={
     hdbscan - the list of parametrs for hdbscan
     
     Example - dfret=cluster_all_points(df,df.WK_ZONE==1)
+    
     '''
     import hdbscan
     dftmp=dfsrc.copy()
@@ -186,6 +203,7 @@ def cluster_all_points(dfsrc,filter_rows,LongitudeLatitude=LOCS,hdbscan_params={
 
 def ttest(dfsrc,label,clusterfield='cluster',notinclusternumber=0):
     '''
+
     This function takes a pandas dataframe with at least 1 field - clusterfield (the field indicating the cluster which the
     data point is in). The it performs a ttest for significance for each cluster against data in non-clusters and returns
     the tstat and pvalue for the test in addtional fields. For each cluster, it will have the same tstat and pvalue. Note that
@@ -200,6 +218,7 @@ def ttest(dfsrc,label,clusterfield='cluster',notinclusternumber=0):
     notinclusternumber - the cluster number to use to indicate in the clusterfield that it's not in a cluster
     
     Example: ttest(df,df.WRK_ZONE==1)
+    
     '''
     dftmp=dfsrc.copy()
     dftmp['label']=label
@@ -216,11 +235,13 @@ def ttest(dfsrc,label,clusterfield='cluster',notinclusternumber=0):
 
 def signficant_clusters(dfsrc,adjust_clusters=True, alpha=0.05):
     '''
+
     The function returns a dataframe with the field 'pvalue'. It returns a dataframe with a boolean field 'b_sig' indicating if it's significant for not.
     The function adjusts for bonferroni correction.
     
     dfsrc - the dataframe
     alpha - alpha level
+    
     
     '''
     dftmp=dfsrc.copy()
@@ -233,18 +254,21 @@ def signficant_clusters(dfsrc,adjust_clusters=True, alpha=0.05):
 
 def UniqueCases(dforig,varlist=['st_case'],column='id'):
     '''
+
     returns the number of unique cases
+    
     '''
     return len(dforig[column].unique())==dforig.shape[0],max(dforig.groupby(column)[varlist].count().max())
 # plotting map
 
 def plot_map(dfsrc,color='navy',ON_points=False,title="US Scatter Map"):
     '''
+
     plots the accident points according to 'longitud' and 'latitude' into a map
     If color parameter is not a list, it's just 1 color, otherwise, it should inidicate clusters for each data point.
     ON_points is a list of points where the a circular outline will be drawn regardless of the clusters - used for indicating "ON" points
+    
     '''
-   
     dftmp=dfsrc.copy()
    
     if type(color) is not str:
@@ -300,9 +324,11 @@ def plot_map(dfsrc,color='navy',ON_points=False,title="US Scatter Map"):
 # EDA Functions
 def getVarlist(filename='../ListofVariables.xlsx'):
     '''
+
     reads the list of data files to load from the filename and loads the variables wanted as indicated from filename into a dictionary
 
-    Returns - dictionary with filenames as the key ('accident','cevent',etc) and the list of variables wanted from that dat file
+    Returns - dictionary with filenames as the key ('accident','cevent',etc) and the list of variables wanted from that data file
+    
     '''
     dftmp=pd.read_excel(filename, sheet_name='Variables')
     varlist={}
@@ -313,9 +339,12 @@ def getVarlist(filename='../ListofVariables.xlsx'):
 
 def createHistograms(filename='accident.csv'):
     '''
+
+
     Creates histogram plots for the file according the the variables pulled from the getVarlist() function
 
     Returns - nothing
+    
     '''
     if type(filename) is str:
         dftmp=getalldata(filename)
@@ -340,11 +369,13 @@ def createHistograms(filename='accident.csv'):
 # Mapping Functions
 def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.xlsx',sheet='Variables'):
     '''
+
     returns a multi-level dictionary 1 key=variable name, the value is another dictionary of key = code, value = to be recoded as
     see kc_data_dict.xlsx for format
     returns dictionary of {'filename':{'value we want to code':'value in the FARS dataset (accepts commas, ex 28,27, and 30:90 to indicate 30 to 90 sequentially',...}. Effectively, the results createDataDictForTranslation() output. See the function for more info.
 
     Return example {'p_crash1':{'9':[99,98],'10':[10],'8':[1,2,3,4,5]}} --> the kc_data_dict.xlsx  in excel would be  File='vehicle',Variable='p_crash1',type='Category',(code=9, Coe Notes=99,98), (code=10, Code Notes = 10), (code=8, Code Notes=1:5)
+    
     '''
     dftmp=pd.read_excel(filename,sheet_name=sheet)
     primdict={}
@@ -377,10 +408,11 @@ def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.x
 
 def translateVarsFromDict(dforig,transDict):
     '''
+
     dforig - the dataframe to translate
     transdict - dictioary of {'filename':{'value we want to code':'value in the FARS dataset (accepts commas, ex 28,27, and 30:90 to indicate 30 to 90 sequentially',...}. Effectively, the results createDataDictForTranslation() output. See the function for more info.
+    
     '''
-
     dftmp=dforig.copy()
     for colname,origToNewVal in transDict.items():
         for k,v in origToNewVal.items():
@@ -392,8 +424,10 @@ def translateVarsFromDict(dforig,transDict):
 
 def pivot_and_chunk(dforig,pivot_col='veh_no',idcol='id'):
     '''
+
     make the pivot_col column values into a heading - flattens the column MultiIndex. idcol does not get expanded. All other columns expands.
 
+    
     '''
     dftmp=dforig.copy()
     dftmp=dftmp.pivot(index=idcol,columns=pivot_col)
@@ -403,7 +437,9 @@ def pivot_and_chunk(dforig,pivot_col='veh_no',idcol='id'):
 
 def getSourceFileFromVariable(variablename,data_dict_file='kc_data_dict.xlsx'):
     '''
+
     returns the source files from the kc_data_dict.xlsx file - the 'File' column
+    
     '''
     dftmp=pd.read_excel(data_dict_file,sheet_name='Variables')
     try:
