@@ -406,6 +406,23 @@ def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.x
         primdict[i]=d
     return primdict
 
+def checkDataDictForType(filename='kc_data_dict.xlsx',sheet='Variables',SourceFile='vehicle',return_type='numeric'):
+    '''
+    check the data dict file (filename) for the variable and return a list of variables given the return_type from teh data dict file
+
+    SourceFile = original data file
+    return_type = the type in column
+
+    '''
+    dftmp=pd.read_excel(filename,sheet_name=sheet)
+    dftmp=dftmp.loc[:,['File','Variable','Type']]
+    dftmp['File']=[i.lower() for i in dftmp.File]
+    dftmp['Variable']=[i.lower() for i in dftmp.Variable]
+    dftmp['Type']=[i.lower() for i in dftmp.Type]
+    dftmp=dftmp.drop_duplicates()
+    dftmp=dftmp.loc[dftmp.File==SourceFile.lower(),:]
+    return dftmp.loc[dftmp.Type==return_type.lower(),'Variable'].values.tolist()
+
 def translateVarsFromDict(dforig,transDict):
     '''
 
