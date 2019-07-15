@@ -134,7 +134,7 @@ def binarizeVariables(dforig,variable_list=['peds','route'],TopN=5):
     dftmp=dforig.copy()
     for col in variable_list:
         for value in dftmp[col].value_counts().index[0:TopN].tolist():
-            dftmp[col+'$'+str(value)]= dftmp[col]==value
+            dftmp[col+'_'+str(value)]= dftmp[col]==value
     return dftmp.drop(variable_list,axis=1)
 
 # Clustering Functions
@@ -384,7 +384,6 @@ def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.x
         dftmp2=dftmp.loc[dftmp.Variable==i,:]
         d={}
         l=[]
-        l.append('not in')
         for code,code_string,cn in zip(dftmp2.Code, dftmp2['Code Definition'],dftmp2['Code Notes']):
                 if not np.isnan(code):
                     code=str(int(code))
@@ -394,8 +393,6 @@ def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.x
                     else:
                         cn=literal_eval(str(cn))
                     if type(cn) is int:
-                        if cn != 9999:
-                            l.append(cn)
                         if use_code:
                             d[code]=[cn]
                         else:
@@ -405,10 +402,12 @@ def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.x
                             d[code]=cn
                         else:
                             d[code_string]=cn
-                        l.extend(cn)
+                        if cn[0]!=9999:
+                            l.extend(cn)
         for k,v in d.items():
             if v[0]==9999:
-                d[k]=l
+                x=[i for i in range(0,v[1]+1) if i not in l]
+                d[k]=x
         primdict[i]=d
     return primdict
 
@@ -439,16 +438,10 @@ def translateVarsFromDict(dforig,transDict,use_code=False):
     dftmp=dforig.copy()
     for colname,origToNewVal in transDict.items():
         for k,v in origToNewVal.items():
-            if str(v[0]).lower()=='not in':
-                if use_code:
-                    dftmp.loc[[i not in v for i in dftmp[colname]],colname]=int(k)
-                else:
-                    dftmp.loc[[i not in v for i in dftmp[colname]],colname]=k
+            if use_code:
+                dftmp.loc[[i in v for i in dftmp[colname]],colname]=int(k)
             else:
-                if use_code:
-                    dftmp.loc[[i in v for i in dftmp[colname]],colname]=int(k)
-                else:
-                    dftmp.loc[[i in v for i in dftmp[colname]],colname]=k
+                dftmp.loc[[i in v for i in dftmp[colname]],colname]=k
     return dftmp
 
 def pivot_and_chunk(dforig,pivot_col='veh_no',idcol='id',fillna=''):
