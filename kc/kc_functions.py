@@ -91,7 +91,7 @@ def createTimestamp(dforig):
     dftmp['tstamp']=[pd.Timestamp(year=v.year,month=v.month,day=v.day,hour=v.hour,minute=v.minute) for i,v in dftmp.iterrows()]
     return dftmp
     
-def removeUnneededColumns(dforig,filename='accident.csv',keep_columns=[],getVarlist_params={'filename':'../ListofVariables.xlsx'}):
+def removeUnneededColumns(dforig,filename='accident.csv',keep_columns=[],getVarlist_params={'filename':'kcListofVariables.xlsx'}):
     '''
 
     Removes uneeded columns from the dataframe accoding to a specified file. The function used to get the columns is getVarlist. filename should be the data filename to filter.
@@ -134,8 +134,8 @@ def binarizeVariables(dforig,variable_list=['peds','route'],TopN=5):
     dftmp=dforig.copy()
     for col in variable_list:
         for value in dftmp[col].value_counts().index[0:TopN].tolist():
-            dftmp[col+'_'+str(value)]= dftmp[col]==value
-    return dftmp
+            dftmp[col+'$'+str(value)]= dftmp[col]==value
+    return dftmp.drop(variable_list,axis=1)
 
 # Clustering Functions
 
@@ -322,7 +322,7 @@ def plot_map(dfsrc,color='navy',ON_points=False,title="US Scatter Map"):
     show(p)
     
 # EDA Functions
-def getVarlist(filename='../ListofVariables.xlsx'):
+def getVarlist(filename='kcListofVariables.xlsx'):
     '''
 
     reads the list of data files to load from the filename and loads the variables wanted as indicated from filename into a dictionary
@@ -367,7 +367,7 @@ def createHistograms(filename='accident.csv'):
     return None
 
 # Mapping Functions
-def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.xlsx',sheet='Variables'):
+def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.xlsx',sheet='Variables',use_code=False):
     '''
 
     returns a multi-level dictionary 1 key=variable name, the value is another dictionary of key = code, value = to be recoded as
@@ -385,7 +385,7 @@ def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.x
         d={}
         l=[]
         l.append('not in')
-        for code,cn in zip(dftmp2.Code,dftmp2['Code Notes']):
+        for code,code_string,cn in zip(dftmp2.Code, dftmp2['Code Definition'],dftmp2['Code Notes']):
                 if not np.isnan(code):
                     code=str(int(code))
                     if re.match('[0-9]+:[0-9]+',str(cn)) is not None: # it's a range
@@ -396,9 +396,15 @@ def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.x
                     if type(cn) is int:
                         if cn != 9999:
                             l.append(cn)
-                        d[code]=[cn]
+                        if use_code:
+                            d[code]=[cn]
+                        else:
+                            d[code_string]=[cn]
                     else:
-                        d[code]=cn
+                        if use_code:
+                            d[code]=cn
+                        else:
+                            d[code_string]=cn
                         l.extend(cn)
         for k,v in d.items():
             if v[0]==9999:
@@ -423,7 +429,7 @@ def checkDataDictForType(filename='kc_data_dict.xlsx',sheet='Variables',SourceFi
     dftmp=dftmp.loc[dftmp.File==SourceFile.lower(),:]
     return dftmp.loc[dftmp.Type==return_type.lower(),'Variable'].values.tolist()
 
-def translateVarsFromDict(dforig,transDict):
+def translateVarsFromDict(dforig,transDict,use_code=False):
     '''
 
     dforig - the dataframe to translate
@@ -434,12 +440,18 @@ def translateVarsFromDict(dforig,transDict):
     for colname,origToNewVal in transDict.items():
         for k,v in origToNewVal.items():
             if str(v[0]).lower()=='not in':
-                dftmp.loc[[i not in v for i in dftmp[colname]],colname]=int(k)
+                if use_code:
+                    dftmp.loc[[i not in v for i in dftmp[colname]],colname]=int(k)
+                else:
+                    dftmp.loc[[i not in v for i in dftmp[colname]],colname]=k
             else:
-                dftmp.loc[[i in v for i in dftmp[colname]],colname]=int(k)
+                if use_code:
+                    dftmp.loc[[i in v for i in dftmp[colname]],colname]=int(k)
+                else:
+                    dftmp.loc[[i in v for i in dftmp[colname]],colname]=k
     return dftmp
 
-def pivot_and_chunk(dforig,pivot_col='veh_no',idcol='id'):
+def pivot_and_chunk(dforig,pivot_col='veh_no',idcol='id',fillna=''):
     '''
 
     make the pivot_col column values into a heading - flattens the column MultiIndex. idcol does not get expanded. All other columns expands.
@@ -448,7 +460,8 @@ def pivot_and_chunk(dforig,pivot_col='veh_no',idcol='id'):
     '''
     dftmp=dforig.copy()
     dftmp=dftmp.pivot(index=idcol,columns=pivot_col)
-    dftmp=dftmp.fillna(0)
+    if fillna !='':
+        dftmp=dftmp.fillna(fillna)
     dftmp.columns=['$'.join(col).strip() if str(col[1])!='' else str(col[0]) for col in dftmp.columns.values]
     return dftmp
 
@@ -464,3 +477,32 @@ def getSourceFileFromVariable(variablename,data_dict_file='kc_data_dict.xlsx'):
     except IndexError as e:
         print(f'{variablename} does not exist in {data_dict_file}. Returning None.')
         return None
+
+def addSummaryStats(dforig,functions,postfixes='func'):
+    '''
+    Add summary stats to dforig according to columns separted by attribute$veh1, attribute$veh2, etc... only add summary stats on attribute levels
+
+    func is the *list of functions* to apply - for example: [mean, sum, np.nansum, np.nanmean, etc]
+
+    postfix is the *list* of names to add for each respective function on the column name
+    '''
+    dftmp=dforig.copy()
+    cols=dftmp.columns.tolist()
+    primcols=[ i.split('$')[0] for i in  cols]
+    primcols=list(set(primcols))
+    d={}
+    try:
+        for p in primcols:
+            dftmp2=dftmp.loc[:,[True if re.match(p,i) else False for i in cols]]
+            for postfix,function in zip(postfixes,functions):
+                d[p+"$"+postfix]=dftmp2.apply(function,axis=1).values
+        for k,v in d.items():
+            dftmp[k]=v
+        return dftmp 
+    except Exception as e:
+        print(p)
+        print(f'{e}:e.args')
+        return None
+
+def notZero(l):
+    return np.nansum(list(l))==0
