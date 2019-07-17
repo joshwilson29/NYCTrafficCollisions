@@ -471,32 +471,24 @@ def getSourceFileFromVariable(variablename,data_dict_file='kc_data_dict.xlsx'):
         print(f'{variablename} does not exist in {data_dict_file}. Returning None.')
         return None
 
-# old
-# def addSummaryStats(dforig,functions,postfixes='func'):
-#     '''
-#     Add summary stats to dforig according to columns separted by attribute$veh1, attribute$veh2, etc... only add summary stats on attribute levels
-# 
-#     func is the *list of functions* to apply - for example: [mean, sum, np.nansum, np.nanmean, etc]
-# 
-#     postfix is the *list* of names to add for each respective function on the column name
-#     '''
-#     dftmp=dforig.copy()
-#     cols=dftmp.columns.tolist()
-#     primcols=[ i.split('$')[0] for i in  cols]
-#     primcols=list(set(primcols))
-#     d={}
-#     try:
-#         for p in primcols:
-#             dftmp2=dftmp.loc[:,[True if re.match(p,i) else False for i in cols]]
-#             for postfix,function in zip(postfixes,functions):
-#                 d[p+"$"+postfix]=dftmp2.apply(function,axis=1).values
-#         for k,v in d.items():
-#             dftmp[k]=v
-#         return dftmp 
-#     except Exception as e:
-#         print(p)
-#         print(f'{e}:e.args')
-#         return None
+def addSummaryStats(dforig,functions,postfixes='func'):
+    '''
+    Add summary stats to dforig according to columns separted by attribute$veh1, attribute$veh2, etc... only add summary stats on attribute levels
+
+    func is the *list of functions* to apply - for example: [mean, sum, np.nansum, np.nanmean, etc]
+
+    postfix is the *list* of names to add for each respective function on the column name
+    '''
+    dftmp=dforig.copy()
+    colnames=dftmp.columns.tolist()
+    colgroups=[ re.search('(.*)\$veh[1-4]_{0,1}(.*)',i) for i in colnames]
+    colgroups=set(colgroups)
+    colgroups=[i for i in colgroups if i is not None]
+    for z in colgroups:
+        r=dforig.loc[:,[True if re.search(z.group(1)+'\$veh[1-4]_{0,1}'+ z.group(2),i) else False for i in  colnames]]
+        for f,c in zip(functions,postfixes):
+            dftmp[z.group(1)+'$'+z.group(2) + '$' + c]=f(r,axis=1)
+    return dftmp 
 
 # Do you use below unless using clusters
 def ClusteraddSummaryStats(row,functions,postfixes='func'):
