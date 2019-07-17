@@ -88,7 +88,7 @@ def createTimestamp(dforig):
     
     '''
     dftmp=dforig.copy()
-    dftmp['tstamp']=[pd.Timestamp(year=v.year,month=v.month,day=v.day,hour=v.hour,minute=v.minute) for i,v in dftmp.iterrows()]
+    dftmp['tstamp']=[pd.Timestamp(year=int(v.year),month=int(v.month),day=int(v.day),hour=int(v.hour),minute=int(v.minute)) for i,v in dftmp.iterrows()]
     return dftmp
     
 def removeUnneededColumns(dforig,filename='accident.csv',keep_columns=[],getVarlist_params={'filename':'kcListofVariables.xlsx'}):
@@ -122,7 +122,7 @@ def calculateTopNCatPct(dforig,N=5):
     DO_NOT_CALC=['id','tstamp','longitud','latitude','day','month','year','day_week','hour','minute']
     for i in dforig.columns.tolist():
         if i not in DO_NOT_CALC:
-            l.append([i,(dforig[i].value_counts()/dforig.shape[0])[0:N].sum()])
+            l.append([i,(dforig[i].value_counts().reset_index()/dforig.shape[0]).loc[0:N,i].sum()])
     return pd.DataFrame(l,columns=['variable','percent'])
 
 def binarizeVariables(dforig,variable_list=['peds','route'],TopN=5):
@@ -247,7 +247,7 @@ def signficant_clusters(dfsrc,adjust_clusters=True, alpha=0.05):
     dftmp=dfsrc.copy()
     dftmp['sig']=dftmp['pvalue']<=alpha
     if adjust_clusters:
-        dftmp['cluster']=dftmp['cluster']*dftmp['sig']
+        dftmp['sig_cluster']=dftmp['cluster']*dftmp['sig']
     return dftmp
 
 # Functions for merging
@@ -471,7 +471,35 @@ def getSourceFileFromVariable(variablename,data_dict_file='kc_data_dict.xlsx'):
         print(f'{variablename} does not exist in {data_dict_file}. Returning None.')
         return None
 
-def addSummaryStats(dforig,functions,postfixes='func'):
+# old
+# def addSummaryStats(dforig,functions,postfixes='func'):
+#     '''
+#     Add summary stats to dforig according to columns separted by attribute$veh1, attribute$veh2, etc... only add summary stats on attribute levels
+# 
+#     func is the *list of functions* to apply - for example: [mean, sum, np.nansum, np.nanmean, etc]
+# 
+#     postfix is the *list* of names to add for each respective function on the column name
+#     '''
+#     dftmp=dforig.copy()
+#     cols=dftmp.columns.tolist()
+#     primcols=[ i.split('$')[0] for i in  cols]
+#     primcols=list(set(primcols))
+#     d={}
+#     try:
+#         for p in primcols:
+#             dftmp2=dftmp.loc[:,[True if re.match(p,i) else False for i in cols]]
+#             for postfix,function in zip(postfixes,functions):
+#                 d[p+"$"+postfix]=dftmp2.apply(function,axis=1).values
+#         for k,v in d.items():
+#             dftmp[k]=v
+#         return dftmp 
+#     except Exception as e:
+#         print(p)
+#         print(f'{e}:e.args')
+#         return None
+
+# Do you use below unless using clusters
+def ClusteraddSummaryStats(row,functions,postfixes='func'):
     '''
     Add summary stats to dforig according to columns separted by attribute$veh1, attribute$veh2, etc... only add summary stats on attribute levels
 
@@ -479,23 +507,17 @@ def addSummaryStats(dforig,functions,postfixes='func'):
 
     postfix is the *list* of names to add for each respective function on the column name
     '''
-    dftmp=dforig.copy()
-    cols=dftmp.columns.tolist()
-    primcols=[ i.split('$')[0] for i in  cols]
-    primcols=list(set(primcols))
-    d={}
-    try:
-        for p in primcols:
-            dftmp2=dftmp.loc[:,[True if re.match(p,i) else False for i in cols]]
-            for postfix,function in zip(postfixes,functions):
-                d[p+"$"+postfix]=dftmp2.apply(function,axis=1).values
-        for k,v in d.items():
-            dftmp[k]=v
-        return dftmp 
-    except Exception as e:
-        print(p)
-        print(f'{e}:e.args')
-        return None
+    colnames=row.index.tolist()
+    colgroups=[ re.search('(.*)\$veh[1-4]_{0,1}(.*)',i) for i in colnames]
+    # for i in set(colgroups):
+    rowtmp=row.copy()
+    colgroups=set(colgroups)
+    colgroups=[i for i in colgroups if i is not None]
+    for z in colgroups:
+        r=row[[True if re.search(z.group(1)+'\$veh[1-4]_{0,1}'+ z.group(2),i) else False for i in  colnames]]
+        for f,c in zip(functions,postfixes):
+            rowtmp[z.group(1)+'$'+z.group(2) + '$' + c]=f(r.dropna().astype('int'))
+    return rowtmp
 
-def notZero(l):
-    return np.nansum(list(l))==0
+def gtZero(l):
+    return np.nansum(list(l))>0
