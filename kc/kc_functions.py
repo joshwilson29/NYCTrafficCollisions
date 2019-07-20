@@ -511,5 +511,3 @@ def ClusteraddSummaryStats(row,functions,postfixes='func'):
             rowtmp[z.group(1)+'$'+z.group(2) + '$' + c]=f(r.dropna().astype('int'))
     return rowtmp
 
-def gtZero(l):
-    return np.nansum(list(l))>0
