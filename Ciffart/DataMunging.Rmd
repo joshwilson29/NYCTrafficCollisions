@@ -1,0 +1,315 @@
+---
+title: "Data Set Creation and EDA - FARS Person Data"
+author: "Ciffart Group"
+date: "July 14, 2019"
+output: html_document
+---
+
+```{r packages, include = F, warnings = F}
+
+# Packages for performing analyses
+pkgs <- c('ggplot2', 'dplyr', 'cluster', 'factoextra', 'caret', 'klaR', 'FactoMineR')
+
+# Installs all of the packages
+lapply(pkgs, require, character.only = TRUE)
+
+# Removing package variable
+rm(pkgs)
+
+```
+
+
+```{r Data Loads}
+
+# change directory for loading data
+setwd("~/NYCTrafficCollisions/data/FARS2017NationalCSV")
+
+person_2017 <- read.csv("person.csv")
+
+person_2016 <- read.csv("person_2016.csv")
+
+person_2015 <- read.csv("person_2015.csv")
+
+person_2014 <- read.csv("PERSON_2014.csv")
+
+
+setwd("~/NYCTrafficCollisions/Ciffart")
+
+codenames <- read.csv("Variable_CodeNames_Mapping.csv")
+
+```
+```{r Create Unique Id & Data Merge}
+
+person_2017$Id <- paste0("id_2017.", person_2017$ST_CASE)
+head(person_2017, n = 10)
+
+person_2016$Id <- paste0("id_2016.", person_2016$ST_CASE)
+
+person_2015$Id <- paste0("id_2015.", person_2015$ST_CASE)
+
+person_2014$Id <- paste0("id_2014.", person_2014$ST_CASE)
+
+merged_data <- rbind(person_2017, person_2016)
+merged_data <- rbind(merged_data, person_2015)
+
+# Finding the colunmns that don't align
+setdiff(colnames(person_2014), colnames(merged_data))
+person_2014 <- person_2014[, setdiff(colnames(person_2014), c("ROAD_FNC", "CERT_NO"))]
+merged_data <- merged_data[, setdiff(colnames(merged_data), c("RUR_URB", "FUNC_SYS"))]
+
+# Final Merge
+merged_data <- rbind(merged_data, person_2014)
+
+
+
+
+```
+
+```{r Basic Statistics for columns}
+
+# Understanding the number of repeated rows
+rep_stat <- merged_data %>% group_by(Id) %>% summarise(n = n())
+
+# Find the maximum number of persons, made into a histogram
+ggplot(data = rep_stat, aes(x = n)) + geom_histogram()
+
+# Showing that we will get 90% of the data if we limit ourselves to 4 records
+# We will still have a variable for the number of folks involved in the accident
+summary(rep_stat$n)
+quantile(rep_stat$n, c(.75, .8, .85, .9, .95) )
+rm(rep_stat)
+# We exclude anyone who is beyond the 4th record for a single crash
+# We want to be careful about how we do this, because if there are three cars involved, we wouldn't
+# want to accidentally exclude the drive of the 3rd car in favor of a passenger
+# so we create a data set of only drivers and only passengers
+drivers <- merged_data[which(merged_data$PER_TYP == 1), ]
+# add a column that row numbers
+drivers <- drivers %>% group_by(Id) %>% mutate(rn = row_number())
+head(drivers[,c('ST_CASE','rn')], n = 100)
+
+# exclude any drivers whose rn > 4, this assumption might need to be revisited because the person who might have 'caused' the accident could potentially get excluded
+drivers <- drivers[which(drivers$rn <= 4),]
+drivers <- drivers[, setdiff(colnames(drivers), "rn")]
+
+# now we want to add passengers back in, row number again, and then do another exclusion
+passengers <- merged_data[which(merged_data$PER_TYP != 1), ]
+
+all_dat <- rbind.data.frame(drivers, passengers)
+
+all_dat <- all_dat %>% group_by(Id) %>% mutate(rn = row_number())
+
+all_dat <- all_dat[which(all_dat$rn <= 4),]
+
+```
+
+```{r Variable Stats}
+summary(merged_data$REST_USE)
+
+ggplot(data = merged_data, aes(x = REST_USE)) + geom_histogram()
+
+merged_data %>% group_by(REST_USE) %>% summarise(n = n())
+
+merged_data %>% group_by(ALC_STATUS) %>% summarise(n = n())
+```
+
+
+```{r Creating 4 Data Sets}
+
+person_one <- all_dat[which(all_dat$rn == 1), ] 
+
+person_two <- all_dat[which(all_dat$rn == 2), ] 
+
+person_three <- all_dat[which(all_dat$rn == 3), ] 
+
+person_four <- all_dat[which(all_dat$rn == 4), ] 
+```
+
+
+```{r Creating Binary Variables, Age & Sex}
+
+# Distribution of age
+
+summary(all_dat$AGE)
+
+ggplot(data = all_dat, aes(x = AGE)) + geom_histogram()
+
+# code teenagers, 20 - 30, 30 - 40, 40+
+person_one$PersonOne_Teenage <- ifelse(person_one$AGE < 20, 1, 0)
+person_two$Teenage_PersonTwo <- ifelse(person_two$AGE < 20, 1, 0)
+person_three$Teenage_PersonThree <- ifelse(person_three$AGE < 20, 1, 0)
+person_four$Teenage_PersonFour <- ifelse(person_four$AGE < 20, 1, 0)
+
+person_one$PersonOneTwenties_PersonOne <- ifelse(person_one$AGE >= 20 & person_one$AGE < 30, 1, 0)
+person_two$Twenties_PersonTwo <- ifelse(person_two$AGE >= 20 & person_two$AGE < 30, 1, 0)
+person_three$Twenties_PersonThree <- ifelse(person_three$AGE >= 20 & person_three$AGE < 30, 1, 0)
+person_four$Twenties_PersonFour <- ifelse(person_four$AGE >= 20 & person_four$AGE < 30, 1, 0)
+
+person_one$PersonOneThirties_PersonOne <- ifelse(person_one$AGE >= 30 & person_one$AGE < 40, 1, 0)
+person_two$Thirties_PersonTwo <- ifelse(person_two$AGE >= 30 & person_two$AGE < 40, 1, 0)
+person_three$Thirties_PersonThree <- ifelse(person_three$AGE >= 30 & person_three$AGE < 40, 1, 0)
+person_four$Thirties_PersonFour <- ifelse(person_four$AGE >= 30 & person_four$AGE < 40, 1, 0)
+
+person_one$PersonOne_FortyPlus <- ifelse(person_one$AGE >= 40 & person_one$AGE < 150, 1, 0)
+person_two$FortyPlus_PersonTwo <- ifelse(person_two$AGE >= 40 & person_two$AGE < 150, 1, 0)
+person_three$FortyPlus_PersonThree <- ifelse(person_three$AGE >= 40 & person_three$AGE < 150, 1, 0)
+person_four$FortyPlus_PersonFour <- ifelse(person_four$AGE >= 40 & person_four$AGE < 150, 1, 0)
+
+person_one$PersonOne_MissingAge <- ifelse(person_one$AGE >= 150, 1, 0)
+person_two$MissingAge_PersonTwo <- ifelse(person_two$AGE >= 150, 1, 0)
+person_three$MissingAge_PersonThree <- ifelse(person_three$AGE >= 150, 1, 0)
+person_four$MissingAge_PersonFour <- ifelse(person_four$AGE >= 150, 1, 0)
+
+person_one$PersonOne_MissingAge <- ifelse(person_one$AGE >= 150, 1, 0)
+person_two$MissingAge_PersonTwo <- ifelse(person_two$AGE >= 150, 1, 0)
+person_three$MissingAge_PersonThree <- ifelse(person_three$AGE >= 150, 1, 0)
+person_four$MissingAge_PersonFour <- ifelse(person_four$AGE >= 150, 1, 0)
+```
+
+
+```{r Recoded Data}
+# fixing data types for codenames
+codenames_cat <- codenames[which(codenames$Variable.Type == "Categorical"), ]
+View(codenames_cat)
+codenames$Recoded.Code.Name <- as.character(codenames$Recoded.Code.Name)
+codenames$Variable <- as.character(codenames$Variable)
+codenames$Code <- as.numeric(codenames$Code)
+
+person_one_cat <- person_one[, c("ST_CASE", catvar_unique)]
+
+for (i in colnames(person_one_cat)) {
+  # Which variable are we currently on
+  print(paste0('Variable Name: ', i))
+    # Skipping the ID section
+    if (i == "ST_CASE"){
+    next
+  } else {
+    # WE only need a subset of the 
+    
+    # Replacing values in place
+  for (j in dim(persone_one_cat)[1]{
+    person_one_cat[j,i] <- codenames[which(Variable == i & Code == person_one_cat[]),]
+    
+  }
+  
+       }
+  
+  
+}
+
+person_one_cat[1,"PER_TYP"]
+codenames[which(codenames$Variable == "PER_TYP" & codenames$Code == as.numeric(person_one_cat[1,"PER_TYP"])), "Recoded.Code.Name"]
+
+codenames[which(codenames$Variable == "PER_TYP"), "Recoded.Code.Name" ]
+codenames[which(codenames$Code == 1), ]
+str(codenames)
+View(codenames)
+as.numeric(person_one_cat[1,"PER_TYP"])
+
+```
+
+```{r DynamicColumns}
+
+## In order to do dynamic column creation, I need the unique values for each column to be in a data frame
+## I Only want to do this for categorical variables
+
+catvar <- codenames[which(codenames$Variable.Type == 'Categorical'), 'Variable']
+catvar <- as.character(catvar)
+catvar_unique <- unique(catvar)
+catvar_unique
+columns <- colnames(person_one)
+
+
+unique_vals 
+
+# which variables are categorical?
+unique(person_two$SEAT_POS)
+colnames(person_one)
+col_name <- 'PER_TYP'
+
+# Function to turn object name into string
+funcTochar <- function(x){
+  deparse(substitute(x))
+  
+}
+
+
+# Function to dynamically create columns, for categorical variables
+
+dynamic_col <- function(data = df, col_name = col_name){
+  #print(data)
+  #print(col_name)
+  #print(funcTochar(data))
+  print(col_name)
+  for(j in col_name){
+    print(paste0('ColName: ',j))
+  col_ref <- paste0(funcTochar(data),paste0('$', j))
+  fnc_call <- paste0(paste0("unique(", col_ref), ")")
+  print(paste0('ColRef: ', col_ref))
+  print(paste0('FunctionCall: ', fnc_call))
+  for (i in eval(parse(text = fnc_call))){
+    print(paste0('UniqueValue: ', i))
+    data[,paste0(funcTochar(data), paste0(j, i))] <- ifelse(eval(parse(text = col_ref))==i,1,0)
+  }
+  #data <- return(data)
+  }
+  return(data)
+}
+
+dynamic_col(data = person_one, col_name = catvar_unique)
+
+col_name <- 'PER_TYP'
+for( j in catvar_unique[1:2]){
+  print(j)
+}
+colnames(dx)
+dx <- dynamic_col(data = person_one, col_name = catvar_unique)
+
+dx[which(person_one$PER_TYP != 1), c("PER_TYP", "dataPER_TYP1", "dataPER_TYP2")]
+
+colnames(person_two)
+head(person_one[which(person_one$PER_TYP == 3), c('PER_TYP', 'person_one_PER_TYP1', 'person_one_PER_TYP2')], n = 1000)
+```
+
+```{r Creating Final Data Sets}
+
+columns_tokeep_one <- c("ST_CASE", "Teenage_PersonOne", "Twenties_PersonOne", "Thirties_PersonOne",
+                     "FortyPlus_PersonOne", "MissingAge_PersonOne")
+
+columns_tokeep_two <- c("ST_CASE", "Teenage_PersonTwo", "Twenties_PersonTwo", "Thirties_PersonTwo",
+                     "FortyPlus_PersonTwo", "MissingAge_PersonTwo")
+
+columns_tokeep_three <- c("ST_CASE", "Teenage_PersonThree", "Twenties_PersonThree",
+                          "Thirties_PersonThree","FortyPlus_PersonThree", "MissingAge_PersonThree")
+
+columns_tokeep_four <- c("ST_CASE", "Teenage_PersonFour", "Twenties_PersonFour",
+                         "Thirties_PersonFour","FortyPlus_PersonFour", "MissingAge_PersonFour")
+
+person_one_final <- person_one[, columns_tokeep_one]
+
+person_two_final <- person_two[, columns_tokeep_two]
+
+```
+
+
+```{r Final Dataset}
+# Vector of unique ids
+st_vec <- unique(person_2017$ST_CASE)
+
+# quick inspection to make sure we are good here
+which(duplicated(st_vec) == T)
+
+# Final data set starts as a unique identifier
+idvec <- paste0("id_2017.", st_vec)
+
+# Taking a quick look
+head(idvec, n = 10)
+
+# combining idvec and stvec
+final_df <- data.frame(ST_CASE = st_vec, ID = idvec)
+
+final_df <- left_join(final_df, person_one_final, by = "ST_CASE")
+
+final_df <- left_join(final_df, person_two_final, by = "ST_CASE")
+
+head(final_df, n = 10)
+```

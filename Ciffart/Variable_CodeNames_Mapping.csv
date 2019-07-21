@@ -1,0 +1,259 @@
+Variable,Code,Code Name,Variable Type,Recoded,Recoded Code Name
+STATE,0,STATE,Numeric,0,STATE
+AGE,0,AGE,Numeric,0,AGE
+PER_TYP,1,Driver,Categorical,1,Driver
+PER_TYP,2,Passenger,Categorical,2,Passenger
+PER_TYP,3,Occupant of Motor Vehicle Not In-Transit,Categorical,3,Other
+PER_TYP,4,Occupant of Non Motor Vehicle Transport Device,Categorical,4,Ped
+PER_TYP,5,Pedestrian,Categorical,4,Ped
+PER_TYP,6,Bicyclist,Categorical,4,Ped
+PER_TYP,7,Other Cyclist,Categorical,4,Ped
+PER_TYP,8,Personal Conveyance,Categorical,4,Ped
+PER_TYP,9,Unknown Occupant Type MVIT,Categorical,3,Other
+PER_TYP,10,Persons In/On Buildings,Categorical,3,Other
+PER_TYP,19,Unknown Type of Non-Motorist,Categorical,3,Other
+SEX,1,Male,Categorical,1,Male
+SEX,2,Female,Categorical,2,Female
+SEX,8,Not Reported,Categorical,3,Unknown
+SEX,9,Unknown,Categorical,3,Unknown
+INJ_SEV,0,No Apparent Injury,Categorical,0,No Injury
+INJ_SEV,1,Possible Injury,Categorical,1,Minor Injury
+INJ_SEV,2,Suspected Minor Injury,Categorical,1,Minor Injury
+INJ_SEV,3,Suspected Serious Injury,Categorical,2,Serious Injury
+INJ_SEV,4,Fatal Injury,Categorical,3,Fatal Injury
+INJ_SEV,5,"Injured, Severity Unknown",Categorical,1,Minor Injury
+INJ_SEV,6,Died Prior to Crash,Categorical,4,Died Prior
+INJ_SEV,9,Unknown,Categorical,5,Unknown
+SEAT_POS,0,Not a Motor Vehicle Occupant,Categorical,0,Ped
+SEAT_POS,11,Driver Seat,Categorical,1,Driver
+SEAT_POS,12,Front Seat - Middle,Categorical,2,Front
+SEAT_POS,13,Front Seat - Right Side,Categorical,2,Front
+SEAT_POS,18,Front Seat - Other,Categorical,2,Front
+SEAT_POS,19,Front Seat - Unknown,Categorical,2,Front
+SEAT_POS,21,Second Seat - Left Side,Categorical,3,Second Seat
+SEAT_POS,22,Second Seat - Middle,Categorical,3,Second Seat
+SEAT_POS,23,Second Seat - Right Side,Categorical,3,Second Seat
+SEAT_POS,28,Second Seat - Other,Categorical,3,Second Seat
+SEAT_POS,29,Second Seat - Unknown,Categorical,3,Second Seat
+SEAT_POS,31,Third Seat - Left Side,Categorical,4,Third Seat
+SEAT_POS,32,Third Seat - Middle,Categorical,4,Third Seat
+SEAT_POS,33,Third Seat - Right Side,Categorical,4,Third Seat
+SEAT_POS,38,Third Seat - Other,Categorical,4,Third Seat
+SEAT_POS,39,Third Seat - Unknown,Categorical,4,Third Seat
+SEAT_POS,41,Fourth Seat - Left Side,Categorical,5,Fourth Seat
+SEAT_POS,42,Fourth Seat - Middle,Categorical,5,Fourth Seat
+SEAT_POS,43,Fourth Seat - Right Side,Categorical,5,Fourth Seat
+SEAT_POS,48,Fourth Seat - Other,Categorical,5,Fourth Seat
+SEAT_POS,49,Fourth Seat - Unknown,Categorical,5,Fourth Seat
+SEAT_POS,50,Sleeper Section of Cab (Truck),Categorical,6,Other
+SEAT_POS,51,Other Passengers in Enclosed Cargo Area,Categorical,6,Other
+SEAT_POS,52,Other Passengers in Unenclosed Cargo Area,Categorical,6,Other
+SEAT_POS,53,Other Passengers in Cargo Area,Categorical,6,Other
+SEAT_POS,54,Trailing Unit,Categorical,6,Other
+SEAT_POS,55,Riding on Vehicle Exterior,Categorical,6,Other
+SEAT_POS,98,Not Reported,Categorical,7,Unknown
+SEAT_POS,99,Unknown,Categorical,7,Unknown
+REST_USE,0,Not Applicable,Categorical,0,Not Applicable
+REST_USE,1,Shoulder Belt Only,Categorical,1,Seat Belt
+REST_USE,2,Lap Belt Only,Categorical,1,Seat Belt
+REST_USE,3,Lap and Shoulder Belt,Categorical,1,Seat Belt
+REST_USE,4,Child Restraint Type Unknown,Categorical,2,Child Restraint
+REST_USE,5,DOT-Compliant Motorcycle Helmet,Categorical,5,Helmet
+REST_USE,7,None Used,Categorical,3,None
+REST_USE,8,Retraint Used - Type Unknown,Categorical,4,Other
+REST_USE,10,Child Restraint Type - forward facing,Categorical,2,Child Restraint
+REST_USE,11,Child Restraint Type - Backward Facing,Categorical,2,Child Restraint
+REST_USE,12,Booster Seat,Categorical,2,Child Restraint
+REST_USE,16,"Helmet, Other than DOT-Compliant Motorcycle Helmet",Categorical,5,Helmet
+REST_USE,17,No Helmet,Categorical,6,No Helmet
+REST_USE,19,"Helmet, Unknown Compliance",Categorical,5,Helmet
+REST_USE,20,None Used/Not Applicable,Categorical,0,Not Applicable
+REST_USE,29,Unknown if Helmet Worn,Categorical,7,Unknown
+REST_USE,96,Not a Motor Vehicle Occupant,Categorical,0,Not Applicable
+REST_USE,97,Other,Categorical,4,Other
+REST_USE,98,Not Reported,Categorical,7,Unknown
+REST_USE,99,Unknown,Categorical,7,Unknown
+REST_MIS,0,No Restraint Misuse,Categorical,0,No Restraint Misuse
+REST_MIS,1,Restraint Misuse,Categorical,1,Restraint Misuse
+REST_MIS,99,Not a Motor Vehicle Occupant,Categorical,2,Not Applicable
+AIR_BAG,0,Not Applicable,Categorical,0,Not Applicable
+AIR_BAG,1,Deployed: Front,Categorical,1,Deployed Front
+AIR_BAG,2,Deployed: Side,Categorical,2,Deployed Other
+AIR_BAG,3,Deployed: curtain,Categorical,2,Deployed Other
+AIR_BAG,7,Deployed: Other,Categorical,2,Deployed Other
+AIR_BAG,8,Deployed: Combination,Categorical,2,Deployed Other
+AIR_BAG,9,Deployed: Unknown Location,Categorical,2,Deployed Other
+AIR_BAG,20,Not Deployed,Categorical,3,Not Deployed
+AIR_BAG,28,Switched Off,Categorical,3,Not Deployed
+AIR_BAG,97,Not a Motor Vehicle Occupant,Categorical,4,Ped
+AIR_BAG,98,Not Reported,Categorical,5,Unknown
+AIR_BAG,99,Deployment Unknown,Categorical,5,Unknown
+EJECTION,0,Not Ejected,Categorical,0,Not Ejected
+EJECTION,1,Total Ejected,Categorical,1,Ejected
+EJECTION,2,Partially Ejected,Categorical,2,Partial Ejection
+EJECTION,3,Ejected - Unknown Degree,Categorical,2,Partial Ejection
+EJECTION,7,Not Reported,Categorical,3,Unknown
+EJECTION,8,Not Applicable,Categorical,4,Not Applicable
+EJECTION,9,Unknown if Ejected,Categorical,3,Unknown
+EJ_PATH,0,Not Ejected/Not Applicable,Categorical,0,Not Ejected
+EJ_PATH,1,Through Side Door Opening,Categorical,1,Side Ejection
+EJ_PATH,2,Through Side Window,Categorical,1,Side Ejection
+EJ_PATH,3,Through Windshield,Categorical,2,Front Ejection
+EJ_PATH,4,Through Back Window,Categorical,3,Back Ejection
+EJ_PATH,5,Through Back Door/Tailgate Opening,Categorical,3,Back Ejection
+EJ_PATH,6,Through Roof Opening,Categorical,4,Roof Ejection
+EJ_PATH,7,Through Roof,Categorical,4,Roof Ejection
+EJ_PATH,8,Other Path,Categorical,5,Other
+EJ_PATH,9,Ejection Path Unknown,Categorical,6,Unknown
+EXTRICAT,0,Not Extricated/Not Applicable,Categorical,0,Not Extricated
+EXTRICAT,1,Extricated,Categorical,1,Extricated
+EXTRICAT,9,Unknown,Categorical,9,Unknown
+DRINKING,0,No,Categorical,0,No Drinking
+DRINKING,1,Yes,Categorical,1,Drinking
+DRINKING,8,Not Reported,Categorical,2,Unknown
+DRINKING,9,Unknown,Categorical,2,Unknown
+ALC_DET,1,Evidential Test,Categorical,0,Test
+ALC_DET,2,Preliminary Breath Test,Categorical,0,Test
+ALC_DET,3,Behavioral,Categorical,1,Behavioral
+ALC_DET,4,Passive Alcohol Sensor,Categorical,2,Other
+ALC_DET,5,Observed,Categorical,1,Behavioral
+ALC_DET,8,Other,Categorical,2,Other
+ALC_DET,9,Not Reported,Categorical,3,Unknown
+ALC_STATUS,0,Test Not Given,Categorical,0,No Test
+ALC_STATUS,1,Test Refused,Categorical,0,No Test
+ALC_STATUS,2,Test Given,Categorical,1,Test
+ALC_STATUS,8,Not Reported,Categorical,2,Unknown
+ALC_STATUS,9,Unknown If Tested,Categorical,2,Unknown
+ATST_TYP,0,Not Tested for Alcohol,Categorical,0,Not Tested
+ATST_TYP,1,Blood Test,Categorical,1,Blood Test
+ATST_TYP,2,Breath Test,Categorical,2,Breath Test
+ATST_TYP,3,Urine,Categorical,3,Other
+ATST_TYP,4,Vitreous,Categorical,3,Other
+ATST_TYP,5,Blood Plasma/Serum,Categorical,3,Other
+ATST_TYP,6,Blood Clot,Categorical,3,Other
+ATST_TYP,7,Liver,Categorical,3,Other
+ATST_TYP,8,Other Test Type,Categorical,3,Other
+ATST_TYP,10,Preliminary Breath Test,Categorical,2,Breath Test
+ATST_TYP,95,Not Reported,Categorical,4,Unknown
+ATST_TYP,98,Unkown Test type,Categorical,4,Unknown
+ATST_TYP,99,Unknown if Tested,Categorical,4,Unknown
+ALC_RES,0,BAC,Numeric,0,ALC_RES
+ALC_RES,95,Not Reported,Numeric,0,ALC_RES
+ALC_RES,96,None Given,Numeric,0,ALC_RES
+ALC_RES,97,AC Test Performed,Numeric,0,ALC_RES
+ALC_RES,98,PBT Positive Reading with No Actual Value,Numeric,0,ALC_RES
+ALC_RES,99,Unknown if tested,Numeric,0,ALC_RES
+DRUGS,0,No,Categorical,0,No
+DRUGS,1,Yes,Categorical,1,Yes
+DRUGS,8,Not Reported,Categorical,2,Unknown
+DRUGS,9,Unknown,Categorical,2,Unknown
+DRUG_DET,1,Evidential Test,Categorical,1,Evidential Test
+DRUG_DET,2,Drug Recognition Technician,Categorical,2,Drug Recognition Technician
+DRUG_DET,3,Behavioral,Categorical,3,Behavioral
+DRUG_DET,7,Other,Categorical,4,Other
+DRUG_DET,8,Not Reported,Categorical,5,Not Reported
+HOSPITAL,0,Not Transported,Categorical,0,Not Transported
+HOSPITAL,1,"Yes, EMS",Categorical,1,EMS
+HOSPITAL,2,"Yes, Law Enforcement",Categorical,2,Law Enforcement
+HOSPITAL,3,EMS Unknown Mode,Categorical,1,EMS
+HOSPITAL,4,Transported Unknown,Categorical,3,Other
+HOSPITAL,5,EMS Ground,Categorical,1,EMS
+HOSPITAL,6,Other,Categorical,3,Other
+HOSPITAL,9,Unknown,Categorical,4,Unknown
+DOA,0,Not Applicable,Categorical,0,Not Applicable
+DOA,7,Died at Scene,Categorical,1,Died at Scene
+DOA,8,Died En Route,Categorical,2,Died En Route
+DOA,9,Unknown,Categorical,3,Unknown
+DEATH_MO,88,Not Applicable,Categorical,0,Not Applicable
+DEATH_MO,1,January,Categorical,1,January
+DEATH_MO,2,February,Categorical,2,February
+DEATH_MO,3,March,Categorical,3,March
+DEATH_MO,4,April,Categorical,4,April
+DEATH_MO,5,May,Categorical,5,May
+DEATH_MO,6,June,Categorical,6,June
+DEATH_MO,7,July,Categorical,7,July
+DEATH_MO,8,August,Categorical,8,August
+DEATH_MO,9,September,Categorical,9,September
+DEATH_MO,10,October,Categorical,10,October
+DEATH_MO,11,November,Categorical,11,November
+DEATH_MO,12,December,Categorical,12,December
+DEATH_MO,99,Unknown,Categorical,13,Unknown
+DEATH_DA,88,Not Applicable,Numeric,0,Exclude
+DEATH_DA,0,Day,Numeric,0,Exclude
+DEATH_DA,99,Unknown,Numeric,0,Exclude
+P_SF1,0,Not Applicable,Categorical,1,Exclude
+P_SF1,5,Interfering with Driver,Categorical,1,Exclude
+P_SF1,8,Mentally Challenged,Categorical,1,Exclude
+P_SF1,9,Construction/Maintenance/Utility Worker,Categorical,1,Exclude
+P_SF1,10,Alcohol and/or Drug test Refused,Categorical,1,Exclude
+P_SF1,13,Motorized Wheelchair Rider,Categorical,1,Exclude
+P_SF1,18,Mother of Dead Fetus,Categorical,1,Exclude
+P_SF1,21,Overloading or Improper Loading of Vehicle with Passengers or Cargo,Categorical,1,Exclude
+P_SF1,26,Following Improperly,Categorical,1,Exclude
+P_SF1,28,Improper Lane Usage,Categorical,1,Exclude
+P_SF1,29,Inteinoal Illegal Driving on Road Shoulder,Categorical,1,Exclude
+P_SF1,32,Opeining Vehicle Closure into Moving Traffic or While Vehicle is in Motion,Categorical,1,Exclude
+P_SF1,33,Passing where Prohibited,Categorical,1,Exclude
+P_SF1,37,Traveling on Prohibited Trafficway,Categorical,1,Exclude
+P_SF1,40,assing Through Barrier Positioned to Prohibit or Channel Traffic,Categorical,1,Exclude
+P_SF1,41,Failure to Observe Warnings,Categorical,1,Exclude
+P_SF1,42,Failure to Signal Intentions,Categorical,1,Exclude
+P_SF1,44,Driving Too Fast,Categorical,1,Exclude
+P_SF1,45,Driving Less than Posted Maximum,Categorical,1,Exclude
+P_SF1,47,Making Turn from Wrong Lange,Categorical,1,Exclude
+P_SF1,51,Operator Inexperience,Categorical,1,Exclude
+P_SF1,52,Unfamilier with Roadway,Categorical,1,Exclude
+P_SF1,56,Non-Driver Flees Scene,Categorical,1,Exclude
+P_SF1,57,Improper Tire Pressure,Categorical,1,Exclude
+P_SF1,59,Overcorrecting,Categorical,1,Exclude
+P_SF1,60,"Vision Obscured by Rain, Snow, etc.",Categorical,1,Exclude
+P_SF1,61,Vision Obscured by Reflected Glare,Categorical,1,Exclude
+P_SF1,62,"Curve, Hill, or Other Design Features",Categorical,1,Exclude
+P_SF1,63,"Building, Billboard, Other Structures",Categorical,1,Exclude
+P_SF1,64,"Trees, Crops, Vegetation",Categorical,1,Exclude
+P_SF1,65,Motor Vehicle,Categorical,1,Exclude
+P_SF1,66,Parked Vehicle,Categorical,1,Exclude
+P_SF1,67,Splash or Spray from Passing Vehicle,Categorical,1,Exclude
+P_SF1,68,Inadequate Lighting System,Categorical,1,Exclude
+P_SF1,69,Obstructing Angles on Vehicle,Categorical,1,Exclude
+P_SF1,70,Mirrors,Categorical,1,Exclude
+P_SF1,72,Other Visual Obstruction,Categorical,1,Exclude
+P_SF1,73,Severe Crosswind,Categorical,1,Exclude
+P_SF1,74,Wind from Passing Truck,Categorical,1,Exclude
+P_SF1,75,Slipery or Loose Surface,Categorical,1,Exclude
+P_SF1,76,Tire Blow-out or flat,Categorical,1,Exclude
+P_SF1,77,Debris or Objects in Road,Categorical,1,Exclude
+P_SF1,78,"Ruts, Holes, Bumps in Road",Categorical,1,Exclude
+P_SF1,80,Vehicle in road,Categorical,1,Exclude
+P_SF1,81,Phantom Vehicle,Categorical,1,Exclude
+P_SF1,82,"Pedestrian, Pedalcyclist, other non-motorist",Categorical,1,Exclude
+P_SF1,83,Road Conditions Weather,Categorical,1,Exclude
+P_SF1,86,Emergency Services Personnel,Categorical,1,Exclude
+P_SF1,87,Police or Law Enforcement,Categorical,1,Exclude
+P_SF1,88,Seat Back not in Normal Upright Position,Categorical,1,Exclude
+P_SF1,89,Parked Motor Vehicle with equipment extending into the Travel Lane,Categorical,1,Exclude
+P_SF1,90,Non-Motoris Pushing a Vehicle,Categorical,1,Exclude
+P_SF1,91,Portable Electronic Devices,Categorical,1,Exclude
+P_SF1,92,Person in Ambulance Treatment Compartment,Categorical,1,Exclude
+P_SF1,93,Non-Motorist Wearing Motorcycle Helmet,Categorical,1,Exclude
+P_SF1,99,Unknown,Categorical,1,Exclude
+LAG_HRS,0,Lag Hours,Numeric,0,Exclude
+RACE,0,Not Applicable,Categorical,0,Not Applicable
+RACE,1,White,Categorical,1,White
+RACE,2,Black,Categorical,2,Black
+RACE,3,American Indian,Categorical,3,American Indian
+RACE,4,Chinese,Categorical,4,Asian
+RACE,5,Japanese,Categorical,4,Asian
+RACE,6,Hawaiian,Categorical,4,Asian
+RACE,7,Filipino,Categorical,4,Asian
+RACE,18,Asian Indian,Categorical,4,Asian
+RACE,19,Other iindian,Categorical,4,Asian
+RACE,28,Korean,Categorical,4,Asian
+RACE,38,Samoan,Categorical,4,Asian
+RACE,48,Vietnamese,Categorical,4,Asian
+RACE,58,Guamanian,Categorical,4,Asian
+RACE,68,Other Asian or Pacific Islander,Categorical,4,Asian
+RACE,78,Asian or Pacific Islander,Categorical,4,Asian
+RACE,97,Multiple Races,Categorical,5,Other
+RACE,98,All Other Races,Categorical,5,Other
+RACE,99,Unknown,Categorical,6,Unknown
