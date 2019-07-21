@@ -13,6 +13,7 @@ import bokeh.models as bmo
 from bokeh.palettes import d3, viridis
 from bokeh.plotting import figure,output_notebook,ColumnDataSource,show
 from bokeh.layouts import column,row,gridplot
+from scipy.stats import chisquare ,kendalltau
 import re
 
 LOCS=['longitud','latitude']
@@ -136,6 +137,10 @@ def binarizeVariables(dforig,variable_list=['peds','route'],TopN=5):
         for value in dftmp[col].value_counts().index[0:TopN].tolist():
             dftmp[col+'_'+str(value)]= dftmp[col]==value
     return dftmp.drop(variable_list,axis=1)
+
+def replaceStates(col,file='state.xlsx'):
+    s=pd.read_excel(file).set_index('Code').to_dict()
+    return col.replace(s['State'])
 
 # Clustering Functions
 
@@ -511,3 +516,44 @@ def ClusteraddSummaryStats(row,functions,postfixes='func'):
             rowtmp[z.group(1)+'$'+z.group(2) + '$' + c]=f(r.dropna().astype('int'))
     return rowtmp
 
+
+# correlation matrix functions
+def corrmatrix(df,correlation_function,ret=0,**kwargs):
+    '''
+    given the dataframe, df, go through each column and calculate the correlation_function (chisquare, kendall's Tau). Return the 'ret' # argument
+    from the results of the correlation function - for example, chi-statistics, p-value = chisquare(...) -> to get hte p-value, ret should be 1.
+    correlation, p-value = kendalltau(...) --> to get the corraltion, the ret should be 0.
+    
+    **kwargs is passed on to the correlation function for additoinal parameters.
+    
+    '''
+    cols=df.columns.tolist()
+    matrix=pd.DataFrame([],index=cols,columns=cols)
+    for c in cols:
+        for r in cols:
+            if c!=r:
+                x=df.loc[(~df[c].isnull()) & (~df[r].isnull()),c].astype('int')
+                y=df.loc[(~df[c].isnull()) & (~df[r].isnull()),r].astype('int')
+                if correlation_function == kendalltau:
+                    q=correlation_function(x,y,**kwargs)
+                else:
+                    q=correlation_function(x,y)
+                matrix.loc[r,c]=1 if np.isnan(q[ret]) else q[ret]    # the if... then statement is needed bcs scipy with p-value = 1 caculates a nan instead
+    return pd.DataFrame(matrix,index=cols,columns=cols)
+
+def calcCorrMatrix(df,groupby_var='state',kwargs={'correlation_function':chisquare,'nan_policy':'omit','ret':1}):
+    '''
+    Calcaulate the correlation matrix using corrmatrix(...) function for the entire dataframe. Then group by the groupby_var and
+    calculate the correlation matrix for each group. kwargs is a dictionary specifying the correlation function, etc.
+    '''
+    # calc for all
+    dfprim=corrmatrix(df,**kwargs).reset_index().rename({'index':'prim_var'},axis=1).melt(id_vars='prim_var') \
+           .assign(state=0,full=lambda x: [i + '-' + j for i,j in zip(x.prim_var,x.variable)])
+    
+    for i in set(df[groupby_var]):
+        dftmp=pd.DataFrame(df.loc[df[groupby_var]==i,:])
+        dftmp=corrmatrix(dftmp,**kwargs).reset_index().rename({'index':'prim_var'},axis=1).melt(id_vars='prim_var') \
+           .assign(state=i,full=lambda x: [p + '-' + q for p,q in zip(x.prim_var,x.variable)])
+        dfprim=dfprim.append(dftmp)
+    return dfprim
+    
