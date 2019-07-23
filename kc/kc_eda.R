@@ -1,6 +1,25 @@
 library(dplyr)
 library(ggplot2)
 library(lubridate)
+
+setwd('~/Documents/Classes/W210 - Capstone/NYCTrafficCollisions/')
+df=read.csv('kc/kc_tmp.csv')
+#cor.test(df$m_harm.Moving.Vehicle.any,df$owner.Private.Owner.any,method='kendall')
+df=df[,2:dim(df)[2]]
+m=data.frame()
+dftmp=df
+for (i in 0:50)
+for (i in names(dftmp)) {
+  for (j in names(dftmp)){
+    if (i!=j & i!='state' & j!='state') {
+      c=chisq.test(dftmp[,i],dftmp[,j])
+      m[i,j]=c$p.value
+    }
+  }
+}
+
+
+
 eda = function(sep,sep2,long,lat,var,namesep,namesep2,namelong,namelat,namevar) {
   dfplot=data.frame(c(sep,var))
   names(dfplot) = c('group','target')
