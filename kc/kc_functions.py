@@ -42,6 +42,27 @@ def getalldata(filename='accident.csv',prefix='../data/'):
     dftmp=dftmp.reset_index().drop('index',axis=1)
     return dftmp
 
+# Print iterations progress
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█'):
+    """
+    Call in a loop to create terminal progress bar
+    @params:
+    iteration   - Required  : current iteration (Int)
+    total       - Required  : total iterations (Int)
+    prefix      - Optional  : prefix string (Str)
+    suffix      - Optional  : suffix string (Str)
+    decimals    - Optional  : positive number of decimals in percent complete (Int)
+    length      - Optional  : character length of bar (Int)
+    fill        - Optional  : bar fill character (Str)
+    """
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end = '\r')
+    # Print New Line on Complete
+    if iteration == total: 
+        print()
+
 # Please ignore this function for now - need to be edited to figure out how we'll deal with multiple columns
 def mergedata(dfmain,filename='distract.csv',columns=[]):
     '''
@@ -529,7 +550,9 @@ def corrmatrix(df,correlation_function,ret=0,**kwargs):
     '''
     cols=df.columns.tolist()
     matrix=pd.DataFrame([],index=cols,columns=cols)
-    for c in cols:
+    printProgressBar(0,len(cols),"Progress ", "Complete",length=50)
+    for i,c in enumerate(cols):
+        printProgressBar(i+1,len(cols),"Progress ", "Complete",length=50)
         for r in cols:
             if c!=r:
                 x=df.loc[(~df[c].isnull()) & (~df[r].isnull()),c].astype('int')
@@ -538,22 +561,28 @@ def corrmatrix(df,correlation_function,ret=0,**kwargs):
                     q=correlation_function(x,y,**kwargs)
                 else:
                     q=correlation_function(x,y)
-                matrix.loc[r,c]=1 if np.isnan(q[ret]) else q[ret]    # the if... then statement is needed bcs scipy with p-value = 1 caculates a nan instead
+                if ret==-1:
+                    matrix.loc[r,c]=q
+                else:
+                    matrix.loc[r,c]= 1.0 if np.isnan(q[ret]) else q[ret]    # the if... then statement is needed bcs scipy with p-value = 1 caculates a nan instead
     return pd.DataFrame(matrix,index=cols,columns=cols)
 
-def calcCorrMatrix(df,groupby_var='state',kwargs={'correlation_function':chisquare,'nan_policy':'omit','ret':1}):
+def calcCorrMatrix(df,groupby_var='state',kwargs={'correlation_function':kendalltau,'nan_policy':'omit','ret':-1}):
     '''
     Calcaulate the correlation matrix using corrmatrix(...) function for the entire dataframe. Then group by the groupby_var and
     calculate the correlation matrix for each group. kwargs is a dictionary specifying the correlation function, etc.
     '''
     # calc for all
+    print(f'All Records')
     dfprim=corrmatrix(df,**kwargs).reset_index().rename({'index':'prim_var'},axis=1).melt(id_vars='prim_var') \
-           .assign(state=0,full=lambda x: [i + '-' + j for i,j in zip(x.prim_var,x.variable)])
-    
-    for i in set(df[groupby_var]):
+          .assign(state=0,full=lambda x: [i + '-' + j for i,j in zip(x.prim_var,x.variable)])
+    l=len(set(df[groupby_var])) 
+    for k,i in enumerate(set(df[groupby_var])):
+        print(f'State: {i}')
         dftmp=pd.DataFrame(df.loc[df[groupby_var]==i,:])
         dftmp=corrmatrix(dftmp,**kwargs).reset_index().rename({'index':'prim_var'},axis=1).melt(id_vars='prim_var') \
            .assign(state=i,full=lambda x: [p + '-' + q for p,q in zip(x.prim_var,x.variable)])
         dfprim=dfprim.append(dftmp)
     return dfprim
-    
+
+

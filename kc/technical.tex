@@ -1,0 +1,43 @@
+\documentclass{article}
+
+\begin{document}
+\title{Technical Document}
+\date{\today}
+\author{Kyle Chuang}
+%  \maketitlepage
+
+%  \newpage
+\section{General Overview}
+One of the primary components in analyzing traffic crash data is the geographical features of each location, making each data point spatially aware. Clustering was chosen due to its ability to identify data points with similar characteristics on a spatial feature.
+\section{Clustering Algorithm Selection}
+The are many clustering algorithms available. The most popular algorithms include K-Nearest Neighbors (KNN), K-Means and Gaussian Mixture Models (GMM). Unfortunately, those popular algorithms were not suitable for the problem posed. For KNN/K-means, the weakness stems from stability. Though multiple runs are typically required to assess stability, there are no guarantees of cluster stability within each run for any given data point. For GMM and K-means, the spherical/elliptical constraints for each cluster may not be appropriate for a traffic analysis problem as accidents may run along a road or a geographic feature, which is unconstrained. Finally, the clustering algorithms provided above are unable to classify points as "not in cluster". Even with modified method of "cutting" off points at a given distance/probability (K-mean/GMM) as "not-in-cluster", other weaknesses make the algorithms provided inapproriate for the analysis.
+
+\section{HDBScan}
+HDBScan (heirarchical density based scan) was chosen as the clustering algorithm. HDBScan is a clustering algorithm based on density. It is non-parametric and shapewise unconstrained. The algorithm is also consistent and stable. Repeated runs of the algorithm will always provide the same results unlike some of the algorithms above. Additionally, it has the ability to classify data points as not in any cluster based on cluster stability and density rather than a specified cutoff reqired in the more popular algorithms noted above.  HDBScan can succintly be described as clustering based on how close the data points are relative to each other in a given area. A very brief technical overview is provided below.
+
+HDBScan begins by calculating the distance of reachability ($\lambda$) between the points. Reachability ($\lambda$) between $a$ and $b$ is defined as the maximum of
+\begin{enumerate}
+\item distance between $a$ and $b$
+\item the radius of a circle, which encompasses $n$ number of points for $a$
+\item the radius of a circle, which encompasses $n$ number of points for $b$
+\end{enumerate}
+Once the distance has been calculated for all points relative to each other, a mutual reachability tree is built by finding the minimum spanning tree for all points. The minimum spanning tree will have a root node at the very top of the tree and every single data point as the final leafs of the tree. The tree is traversed downwards for splitting the single cluster into multiple clusters. As the distance, $\lambda$, decreases, the smaller formed clusters that are unable to satisfy \textit{minimum cluster size} requirement is considered to be \textit{falling out of any cluster}. Stability of the cluster is considered to be the persistence of the cluster without crossing the \textit{minimum cluster size} threshold as $\lambda$ moves from the maximum (root tree node) to the minimum (final leaf nodes). A cluster is flatten (ie. all node below the level are considered to be the same cluster) when its stability, as defined by $\lambda_{death}-\lambda_{birth}$ of the cluster, is greater than the $\sum_{p \in cluster} \lambda_p-\lambda_{birth}$ of its children.  The statement simply states that if the keeping all points below the current node in the same cluster results in higher stability/persistance than splitting the nodes below the current level, classify all nodes below the current node as belonging in the same cluster.\footnote{For a more detail discussion, please refer to the following link - https://hdbscan.readthedocs.io/en/latest/how\_hdbscan\_works.html.}
+
+\section{Clustering with filters and significance}
+One of the issues when clustering with specific attributes, such as drunk drivers, is that there are also data points of non-drunk drivers in the space. The question of how to find significant clusters of drunk drivers only in a geographical space is answered in the following algorithm.
+\begin{enumerate}
+\item Select only data points with the specific attribute
+\item Run the selected data points through HDBscan using geographic data points. HDBscan will have classified the points into multiple clusters. These clusters are referred to as consideration clusters as we have not formally declared them to be fully formed clusters yet.
+\item Draw a polygon around the consideration cluster data points satisfying the condition that the shape is convex.\footnote{A convex shape is described as a shape where drawing a straight line between any points within the polygon will not cause the line to breach the polygon shape. The precise description is called a convex hull.}
+\item The  consideration cluster is now no longer a group of points, but a specific shape at a geograhical location.
+\item \textit{All} data points re reclassified as \textit{inside the consideration cluster} and \textit{outside the consideration cluster}.
+\item Select all points inside the consideration cluster and perform a difference of means test against all points not in the consideration cluster.
+\item If there is a statistically significant ($\alpha = 0.05$) difference in means, the consideration cluster is formally declared as a cluster. Otherwise, all the data points are reclassified as not belonging in any cluster. 
+\end{enumerate}
+A significance test was performed on the last step since clustering does not specify whether the chosen geographic area for our selected attribute is really different from other points outside of the consideration cluster. Instead, clustering is only concerned with spatial and geographic location density. For example, hdbscan may provide us with a consideration cluster of drunk driving fatalities in a city. However, the consideration cluster may be formed simply because there is a higher density of drivers in the city. If we are to propose that the city has a drunk driver problem, it should have a significant different mean of drunk drivers in the consideration cluster compared to outside it.
+
+Finally, the method chosen for difference in means was the wilcoxon signed rank test. The method was chose over t-test since the dataset violates the normality assumptions for smaller cluster sizes. Additionally, it was chosen over $\chi^2-test$ since the data in consideration may have different lengths. Therefore, a contingency table cannot be formed.
+
+\end{document}
+
+
