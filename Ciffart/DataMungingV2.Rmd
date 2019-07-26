@@ -1,0 +1,437 @@
+---
+title: "Data Set Creation and EDA - FARS Person Data"
+author: "Ciffart Group"
+date: "July 14, 2019"
+output: html_document
+---
+
+```{r packages, include = F, warnings = F}
+
+# Packages for performing analyses
+pkgs <- c('ggplot2', 'dplyr', 'cluster', 'factoextra', 'caret', 'klaR', 'FactoMineR')
+
+# Installs all of the packages
+lapply(pkgs, require, character.only = TRUE)
+
+# Removing package variable
+rm(pkgs)
+
+```
+
+
+```{r Data Loads}
+
+# change directory for loading data
+setwd("~/NYCTrafficCollisions/data/FARS2017NationalCSV")
+
+person_2017 <- read.csv("person.csv")
+
+person_2016 <- read.csv("person_2016.csv")
+
+person_2015 <- read.csv("person_2015.csv")
+
+person_2014 <- read.csv("PERSON_2014.csv")
+
+
+setwd("~/NYCTrafficCollisions/Ciffart")
+
+codenames <- read.csv("Variable_CodeNames_Mapping.csv")
+
+```
+
+```{r Create Unique Id & Data Merge}
+
+person_2017$Id <- paste0("id_2017.", person_2017$ST_CASE)
+head(person_2017, n = 10)
+
+person_2016$Id <- paste0("id_2016.", person_2016$ST_CASE)
+
+person_2015$Id <- paste0("id_2015.", person_2015$ST_CASE)
+
+person_2014$Id <- paste0("id_2014.", person_2014$ST_CASE)
+
+merged_data <- rbind(person_2017, person_2016)
+merged_data <- rbind(merged_data, person_2015)
+
+# Finding the colunmns that don't align
+#setdiff(colnames(person_2014), colnames(merged_data))
+person_2014 <- person_2014[, setdiff(colnames(person_2014), c("ROAD_FNC", "CERT_NO"))]
+merged_data <- merged_data[, setdiff(colnames(merged_data), c("RUR_URB", "FUNC_SYS"))]
+
+# Final Merge
+merged_data <- rbind(merged_data, person_2014)
+
+```
+
+```{r Basic Statistics for columns}
+
+# Understanding the number of repeated rows
+rep_stat <- merged_data %>% group_by(Id) %>% summarise(n = n())
+
+# Find the maximum number of persons, made into a histogram
+ggplot(data = rep_stat, aes(x = n)) + geom_histogram()
+
+# Showing that we will get 90% of the data if we limit ourselves to 4 records
+# We will still have a variable for the number of folks involved in the accident
+summary(rep_stat$n)
+quantile(rep_stat$n, c(.75, .8, .85, .9, .95) )
+rm(rep_stat)
+```
+
+```{r Creating Data Set with 4 Max}
+# We exclude anyone who is beyond the 4th record for a single crash
+# We want to be careful about how we do this, because if there are three cars involved, we wouldn't
+# want to accidentally exclude the drive of the 3rd car in favor of a passenger
+# so we create a data set of only drivers and only passengers
+drivers <- merged_data[which(merged_data$PER_TYP == 1), ]
+# add a column that row numbers
+drivers <- drivers %>% group_by(Id) %>% mutate(rn = row_number())
+#head(drivers[,c('ST_CASE','rn')], n = 100)
+
+# exclude any drivers whose rn > 4, this assumption might need to be revisited because the person who might have 'caused' the accident could potentially get excluded
+drivers <- drivers[which(drivers$rn <= 4),]
+drivers <- drivers[, setdiff(colnames(drivers), "rn")]
+
+# now we want to add passengers back in, row number again, and then do another exclusion
+passengers <- merged_data[which(merged_data$PER_TYP != 1), ]
+
+all_dat <- rbind.data.frame(drivers, passengers)
+
+all_dat <- all_dat %>% group_by(Id) %>% arrange(PER_TYP) %>% mutate(rn = row_number())
+
+all_dat <- all_dat[which(all_dat$rn <= 4),]
+
+rm_ds <- c('drivers', 'passengers')
+```
+
+```{r Recoded Data}
+# fixing data types for codenames
+codenames$Recoded.Code.Name <- as.character(codenames$Recoded.Code.Name)
+codenames$Variable <- as.character(codenames$Variable)
+codenames$Code <- as.character(codenames$Code)
+
+codenames_cat <- codenames[which(codenames$Variable.Type == "Categorical"), ]
+
+uniqvar <- c(unique(codenames$Variable),"Id", "STATE")
+
+dat_cln <- all_dat[, uniqvar]
+write.csv(dat_cln, file = 'PersonDataUpload.csv')
+
+
+
+catvar <- codenames[which(codenames$Variable.Type == 'Categorical'), 'Variable']
+catvar <- as.character(catvar)
+catvar_unique <- unique(catvar)
+
+numeric_var <- c("Id", codenames[which(codenames$Variable.Type == 'Numeric'), 'Variable'])
+
+# function for replacing values by looking at the recoded value in codoenames
+for (i in colnames(dat_cln)[1:3]) {
+  # Which variable are we currently on
+  print(paste0('Variable Name: ', i))
+    # Skipping the ID section
+    if (i %in% numeric_var){
+    next
+  } else {
+    # WE only need a subset of the 
+    
+    # Replacing values in place
+  for (j in 1:dim(dat_cln)[1]){
+    if (j %% 10000 == 0){
+      print(paste0("Jth Value: ", j))
+    }
+    dat_cln[j,i] <- codenames[which(codenames$Variable == i &
+                                           codenames$Code == 
+                                             as.character(dat_cln[j,i])),"Recoded.Code.Name"]
+    
+  }
+  
+       }
+  
+  
+}
+
+head(dat_cln, n = 10)
+
+dat_cln <- read.csv("PersonData_Recoded.csv")
+
+# Changing format to characters
+
+factor_col <- colnames(dat_cln)[sapply(dat_cln, is.factor)]
+dat_cln[factor_col] <- lapply(dat_cln[factor_col], as.character)
+dat_cln$ALC_RES <- dat_cln$ALC_RES/1000
+
+```
+
+```{r Variable Stats}
+summary(merged_data$REST_USE)
+
+ggplot(data = merged_data, aes(x = REST_USE)) + geom_histogram()
+
+merged_data %>% group_by(REST_USE) %>% summarise(n = n())
+
+merged_data %>% group_by(ALC_STATUS) %>% summarise(n = n())
+
+merged_data %>% group_by(ATST_TYP) %>% summarise(n = n())
+
+merged_data %>% group_by(DRUG_DET) %>% summarise(n = n())
+
+merged_data %>% group_by(DOA) %>% summarise(n = n())
+
+merged_data %>% group_by(P_SF1) %>% summarise(n = n())
+
+merged_data %>% group_by(P_SF3) %>% summarise(n = n())
+
+```
+
+
+```{r Creating 4 Data Sets}
+
+person_one <- dat_cln[which(dat_cln$rn == 1), ] 
+
+person_two <- dat_cln[which(dat_cln$rn == 2), ] 
+
+person_three <- dat_cln[which(dat_cln$rn == 3), ] 
+
+person_four <- dat_cln[which(dat_cln$rn == 4), ] 
+```
+
+
+```{r Creating Binary Variables, Age & Sex}
+
+# Distribution of age
+
+#summary(dat_cln$AGE)
+
+#ggplot(data = dat_cln, aes(x = AGE)) + geom_histogram()
+
+# code teenagers, 20 - 30, 30 - 40, 40+
+
+person_one$Person_One_AGE_Child <- ifelse(person_one$AGE < 16, 1, 0)
+person_two$Person_Two_AGE_Child <- ifelse(person_two$AGE < 16, 1, 0)
+person_three$Person_Three_AGE_Child <- ifelse(person_three$AGE < 16, 1, 0)
+person_four$Person_Four_AGE_Child <- ifelse(person_four$AGE < 16, 1, 0)
+
+person_one$Person_One_AGE_Teenage <- ifelse(person_one$AGE < 20, 1, 0)
+person_two$Person_Two_AGE_Teenage <- ifelse(person_two$AGE < 20, 1, 0)
+person_three$Person_Three_AGE_Teenage <- ifelse(person_three$AGE < 20, 1, 0)
+person_four$Person_Four_AGE_Teenage <- ifelse(person_four$AGE < 20, 1, 0)
+
+person_one$Person_One_AGE_Twenties <- ifelse(person_one$AGE >= 20 & person_one$AGE < 30, 1, 0)
+person_two$Person_Two_AGE_Twenties <- ifelse(person_two$AGE >= 20 & person_two$AGE < 30, 1, 0)
+person_three$Person_Three_AGE_Twenties <- ifelse(person_three$AGE >= 20 & person_three$AGE < 30, 1, 0)
+person_four$Person_Four_AGE_Twenties <- ifelse(person_four$AGE >= 20 & person_four$AGE < 30, 1, 0)
+
+person_one$Person_One_AGE_Thirties <- ifelse(person_one$AGE >= 30 & person_one$AGE < 40, 1, 0)
+person_two$Person_Two_AGE_Thirties <- ifelse(person_two$AGE >= 30 & person_two$AGE < 40, 1, 0)
+person_three$Person_Three_AGE_Thirties <- ifelse(person_three$AGE >= 30 & person_three$AGE < 40, 1, 0)
+person_four$Person_Four_AGE_Thirties <- ifelse(person_four$AGE >= 30 & person_four$AGE < 40, 1, 0)
+
+person_one$Person_One_AGE_FortyPlus <- ifelse(person_one$AGE >= 40 & person_one$AGE < 150, 1, 0)
+person_two$Person_Two_AGE_FortyPlus <- ifelse(person_two$AGE >= 40 & person_two$AGE < 150, 1, 0)
+person_three$Person_Three_AGE_FortyPlus <- ifelse(person_three$AGE >= 40 & person_three$AGE < 150, 1, 0)
+person_four$Person_Four_AGE_FortyPlus <- ifelse(person_four$AGE >= 40 & person_four$AGE < 150, 1, 0)
+
+person_one$Person_One_AGE_MissingAge <- ifelse(person_one$AGE >= 150, 1, 0)
+person_two$Person_Two_AGE_MissingAge <- ifelse(person_two$AGE >= 150, 1, 0)
+person_three$Person_Three_AGE_MissingAge <- ifelse(person_three$AGE >= 150, 1, 0)
+person_four$Person_Four_AGE_MissingAge <- ifelse(person_four$AGE >= 150, 1, 0)
+
+# ALC RES
+
+#ggplot(data = dat_cln, aes(x = ALC_RES)) + geom_histogram()
+
+# Low 0 - 0.05
+person_one$Person_One_LowBAC <- ifelse(person_one$ALC_RES >= 0 & person_one$ALC_RES < 0.06, 1, 0)
+person_two$Person_Two_LowBAC <- ifelse(person_two$ALC_RES >= 0 & person_two$ALC_RES < 0.06, 1, 0)
+person_three$Person_Three_LowBAC <- ifelse(person_three$ALC_RES >= 0 & person_three$ALC_RES < 0.06, 1, 0)
+person_four$Person_Four_LowBAC <- ifelse(person_four$ALC_RES >= 0 & person_four$ALC_RES < 0.06, 1, 0)
+
+person_one$Person_One_MedBAC <- ifelse(person_one$ALC_RES >= 0.06 & person_one$ALC_RES < 0.17, 1, 0)
+person_two$Person_Two_MedBAC <- ifelse(person_two$ALC_RES >= 0.06 & person_two$ALC_RES < 0.17, 1, 0)
+person_three$Person_Three_MedBAC <- ifelse(person_three$ALC_RES >= 0.06 & person_three$ALC_RES < 0.17, 1, 0)
+person_four$Person_Four_MedBAC <- ifelse(person_four$ALC_RES >= 0.06 & person_four$ALC_RES < 0.17, 1, 0)
+
+person_one$Person_One_HighBAC <- ifelse(person_one$ALC_RES >= 0.17 & person_one$ALC_RES < 0.31, 1, 0)
+person_two$Person_Two_HighBAC <- ifelse(person_two$ALC_RES >= 0.17 & person_two$ALC_RES < 0.31, 1, 0)
+person_three$Person_Three_HighBAC <- ifelse(person_three$ALC_RES >= 0.17 & person_three$ALC_RES < 0.31, 1, 0)
+person_four$Person_Four_HighBAC <- ifelse(person_four$ALC_RES >= 0.17 & person_four$ALC_RES < 0.31, 1, 0)
+
+person_one$Person_One_SevBAC <- ifelse(person_one$ALC_RES >= 0.31 & person_one$ALC_RES < 0.9, 1, 0)
+person_two$Person_Two_SevBAC <- ifelse(person_two$ALC_RES >= 0.31 & person_two$ALC_RES < 0.9, 1, 0)
+person_three$Person_Three_SevBAC <- ifelse(person_three$ALC_RES >= 0.31 & person_three$ALC_RES < 0.9, 1, 0)
+person_four$Person_Four_SevBAC <- ifelse(person_four$ALC_RES >= 0.31 & person_four$ALC_RES < 0.9, 1, 0)
+
+# DEATH_DA - keep as is
+
+# LAG_HRS - check distribtion
+#ggplot(data = dat_cln, aes(x = LAG_HRS)) + geom_histogram()
+#summary(dat_cln$LAG_HRS)
+
+person_one$Person_One_ZeroLag <- ifelse(person_one$LAG_HRS == 0, 1, 0)
+person_two$Person_Two_ZeroLag <- ifelse(person_two$LAG_HRS == 0, 1, 0)
+person_three$Person_Three_ZeroLag <- ifelse(person_three$LAG_HRS == 0, 1, 0)
+person_four$Person_Four_ZeroLag <- ifelse(person_four$LAG_HRS == 0, 1, 0)
+
+person_one$Person_One_Lag_WithinDay <- ifelse(person_one$LAG_HRS >= 0 & person_one$LAG_HRS < 24, 1, 0)
+person_two$Person_Two_Lag_WithinDay <- ifelse(person_two$LAG_HRS >= 0 & person_two$LAG_HRS < 24, 1, 0)
+person_three$Person_Three_Lag_WithinDay <- ifelse(person_three$LAG_HRS >= 0& person_three$LAG_HRS < 24, 1, 0)
+person_four$Person_Four_Lag_WithinDay <- ifelse(person_four$LAG_HRS >= 0 & person_four$LAG_HRS < 24, 1, 0)
+
+person_one$Person_One_Lag_GreaterDay <- ifelse(person_one$LAG_HRS >= 24  & person_one$LAG_HRS < 999, 1, 0)
+person_two$Person_Two_Lag_GreaterDay <- ifelse(person_two$LAG_HRS >= 24 & person_two$LAG_HRS < 999, 1, 0)
+person_three$Person_Three_Lag_GreaterDay <- ifelse(person_three$LAG_HRS >= 24 & person_three$LAG_HRS < 999, 1, 0)
+person_four$Person_Four_Lag_GreaterDay <- ifelse(person_four$LAG_HRS >= 24 & person_four$LAG_HRS < 999, 1, 0)
+
+person_one$Person_One_Lag_Unknown <- ifelse(person_one$LAG_HRS == 999, 1, 0)
+person_two$Person_Two_Lag_Unknown <- ifelse(person_two$LAG_HRS == 999, 1, 0)
+person_three$Person_Three_Lag_Unknown <- ifelse(person_three$LAG_HRS == 999, 1, 0)
+person_four$Person_Four_Lag_Unknown <- ifelse(person_four$LAG_HRS == 999, 1, 0)
+
+```
+
+
+```{r DynamicColumns}
+
+## In order to do dynamic column creation, I need the unique values for each column to be in a data frame
+## I Only want to do this for categorical variables
+
+catvar <- codenames[which(codenames$Variable.Type == 'Categorical'), 'Variable']
+catvar <- as.character(catvar)
+catvar_unique <- unique(catvar)
+catvar_unique
+
+# Function to turn object name into string
+funcTochar <- function(x){
+  deparse(substitute(x))
+  
+}
+
+
+# Function to dynamically create columns, for categorical variables
+
+dynamic_col <- function(data = df, col_name = col_name){
+  #print(data)
+  #print(col_name)
+  #print(funcTochar(data))
+  print(col_name)
+  for(j in col_name){
+    print(paste0('ColName: ',j))
+  col_ref <- paste0(funcTochar(data),paste0('$', j))
+  fnc_call <- paste0(paste0("unique(", col_ref), ")")
+  print(paste0('ColRef: ', col_ref))
+  print(paste0('FunctionCall: ', fnc_call))
+  for (i in eval(parse(text = fnc_call))){
+    print(paste0('UniqueValue: ', i))
+    data[,paste0(funcTochar(data), paste0(j, paste0("_", i)))] <- ifelse(eval(parse(text = col_ref))==i,1,0)
+  }
+  #data <- return(data)
+  }
+  return(data)
+}
+
+person_one <- dynamic_col(data = person_one, col_name = catvar_unique)
+colnames(person_one) <- gsub(x = colnames(person_one), "data", replacement = 'person_one_')
+colnames(person_one)
+
+person_two <- dynamic_col(data = person_two, col_name = catvar_unique)
+colnames(person_two) <- gsub(x = colnames(person_two), "data", replacement = 'person_two_')
+colnames(person_two)
+
+person_three <- dynamic_col(data = person_three, col_name = catvar_unique)
+colnames(person_three) <- gsub(x = colnames(person_three), "data", replacement = 'person_three_')
+colnames(person_three)
+
+person_four <- dynamic_col(data = person_four, col_name = catvar_unique)
+colnames(person_four) <- gsub(x = colnames(person_four), "data", replacement = 'person_four_')
+colnames(person_four)
+
+col_to_remove <- c('STATE', 'AGE','ALC_RES','DEATH_DA','LAG_HRS','PER_TYP','SEX','INJ_SEV','SEAT_POS','REST_USE','REST_MIS','AIR_BAG','EJECTION','EJ_PATH','EXTRICAT','DRINKING','ALC_DET','ALC_STATUS','ATST_TYP','DRUGS','DRUG_DET','HOSPITAL','DOA','DEATH_MO','rn','RACE')
+
+person_one <- person_one[,setdiff(colnames(person_one), col_to_remove)]
+colnames(person_one)
+
+person_two <- person_two[,setdiff(colnames(person_two), col_to_remove)]
+person_three <- person_three[,setdiff(colnames(person_three), col_to_remove)]
+person_four <- person_four[,setdiff(colnames(person_four), col_to_remove)]
+
+```
+
+
+```{r Final Dataset}
+
+final_df <- left_join(person_one, person_two, by = "Id")
+
+final_df <- left_join(final_df, person_three, by = "Id")
+
+final_df <- left_join(final_df, person_four, by = "Id")
+
+head(final_df, n = 10)
+
+colnames(final_df)
+
+write.csv(final_df, file = "PersonUnPivoted.csv", na = "")
+
+
+```
+
+```{r add any columns}
+
+df_colnames <- colnames(final_df)
+df_colnames <- df_colnames[3:length(df_colnames)]
+
+df_colnames <- gsub(x = df_colnames, "person_one_", replacement = '')
+df_colnames <- gsub(x = df_colnames, "person_two_", replacement = '')
+df_colnames <- gsub(x = df_colnames, "person_three_", replacement = '')
+
+df_colnames <- gsub(x = df_colnames, "person_four_", replacement = '')
+
+
+grepl(df(colnames()))
+
+any_col <- function(data = df, col_name = col_name){
+  #print(data)
+  #print(col_name)
+  #print(funcTochar(data))
+  print(col_name)
+  for(j in col_name){
+    print(paste0('ColName: ',j))
+  col_ref <- paste0(funcTochar(data),paste0('$', j))
+  fnc_call <- paste0(paste0("unique(", col_ref), ")")
+  print(paste0('ColRef: ', col_ref))
+  print(paste0('FunctionCall: ', fnc_call))
+  for (i in eval(parse(text = fnc_call))){
+    print(paste0('UniqueValue: ', i))
+    data[,paste0(funcTochar(data), paste0(j, paste0("_", i)))] <- ifelse(eval(parse(text = col_ref))==i,1,0)
+  }
+  #data <- return(data)
+  }
+  return(data)
+}
+
+
+
+
+
+```
+
+
+```{r}
+
+#1 can I grab all of the col names that match df_colnames
+match_col <- function(x){
+for( i in df_colnames[x]){
+  print(paste0('Var Root: ', i))
+  return(colnames(final_df)[grepl(i, colnames(final_df))])
+  
+}
+}
+
+col <- match_col(10)
+col
+final_df[which(final_df$PersonOne_SevBAC == 1),col]
+
+final_df[, col] %>% replace(is.na(.),0) %>% summarise_all(list(sum))
+colnames(final_df)[]
+
+```

@@ -13,6 +13,7 @@ import bokeh.models as bmo
 from bokeh.palettes import d3, viridis
 from bokeh.plotting import figure,output_notebook,ColumnDataSource,show
 from bokeh.layouts import column,row,gridplot
+from scipy.stats import chisquare ,kendalltau
 import re
 
 LOCS=['longitud','latitude']
@@ -88,10 +89,10 @@ def createTimestamp(dforig):
     
     '''
     dftmp=dforig.copy()
-    dftmp['tstamp']=[pd.Timestamp(year=v.year,month=v.month,day=v.day,hour=v.hour,minute=v.minute) for i,v in dftmp.iterrows()]
+    dftmp['tstamp']=[pd.Timestamp(year=int(v.year),month=int(v.month),day=int(v.day),hour=int(v.hour),minute=int(v.minute)) for i,v in dftmp.iterrows()]
     return dftmp
     
-def removeUnneededColumns(dforig,filename='accident.csv',keep_columns=[],getVarlist_params={'filename':'../ListofVariables.xlsx'}):
+def removeUnneededColumns(dforig,filename='accident.csv',keep_columns=[],getVarlist_params={'filename':'kcListofVariables.xlsx'}):
     '''
 
     Removes uneeded columns from the dataframe accoding to a specified file. The function used to get the columns is getVarlist. filename should be the data filename to filter.
@@ -122,7 +123,7 @@ def calculateTopNCatPct(dforig,N=5):
     DO_NOT_CALC=['id','tstamp','longitud','latitude','day','month','year','day_week','hour','minute']
     for i in dforig.columns.tolist():
         if i not in DO_NOT_CALC:
-            l.append([i,(dforig[i].value_counts()/dforig.shape[0])[0:N].sum()])
+            l.append([i,(dforig[i].value_counts().reset_index()/dforig.shape[0]).loc[0:N,i].sum()])
     return pd.DataFrame(l,columns=['variable','percent'])
 
 def binarizeVariables(dforig,variable_list=['peds','route'],TopN=5):
@@ -135,7 +136,11 @@ def binarizeVariables(dforig,variable_list=['peds','route'],TopN=5):
     for col in variable_list:
         for value in dftmp[col].value_counts().index[0:TopN].tolist():
             dftmp[col+'_'+str(value)]= dftmp[col]==value
-    return dftmp
+    return dftmp.drop(variable_list,axis=1)
+
+def replaceStates(col,file='state.xlsx'):
+    s=pd.read_excel(file).set_index('Code').to_dict()
+    return col.replace(s['State'])
 
 # Clustering Functions
 
@@ -247,7 +252,7 @@ def signficant_clusters(dfsrc,adjust_clusters=True, alpha=0.05):
     dftmp=dfsrc.copy()
     dftmp['sig']=dftmp['pvalue']<=alpha
     if adjust_clusters:
-        dftmp['cluster']=dftmp['cluster']*dftmp['sig']
+        dftmp['sig_cluster']=dftmp['cluster']*dftmp['sig']
     return dftmp
 
 # Functions for merging
@@ -322,7 +327,7 @@ def plot_map(dfsrc,color='navy',ON_points=False,title="US Scatter Map"):
     show(p)
     
 # EDA Functions
-def getVarlist(filename='../ListofVariables.xlsx'):
+def getVarlist(filename='kcListofVariables.xlsx'):
     '''
 
     reads the list of data files to load from the filename and loads the variables wanted as indicated from filename into a dictionary
@@ -367,7 +372,7 @@ def createHistograms(filename='accident.csv'):
     return None
 
 # Mapping Functions
-def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.xlsx',sheet='Variables'):
+def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.xlsx',sheet='Variables',use_code=False):
     '''
 
     returns a multi-level dictionary 1 key=variable name, the value is another dictionary of key = code, value = to be recoded as
@@ -384,8 +389,7 @@ def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.x
         dftmp2=dftmp.loc[dftmp.Variable==i,:]
         d={}
         l=[]
-        l.append('not in')
-        for code,cn in zip(dftmp2.Code,dftmp2['Code Notes']):
+        for code,code_string,cn in zip(dftmp2.Code, dftmp2['Code Definition'],dftmp2['Code Notes']):
                 if not np.isnan(code):
                     code=str(int(code))
                     if re.match('[0-9]+:[0-9]+',str(cn)) is not None: # it's a range
@@ -394,15 +398,21 @@ def createDataDictForTranslation(datafile_set='vehicle',filename='kc_data_dict.x
                     else:
                         cn=literal_eval(str(cn))
                     if type(cn) is int:
-                        if cn != 9999:
-                            l.append(cn)
-                        d[code]=[cn]
+                        if use_code:
+                            d[code]=[cn]
+                        else:
+                            d[code_string]=[cn]
                     else:
-                        d[code]=cn
-                        l.extend(cn)
+                        if use_code:
+                            d[code]=cn
+                        else:
+                            d[code_string]=cn
+                        if cn[0]!=9999:
+                            l.extend(cn)
         for k,v in d.items():
             if v[0]==9999:
-                d[k]=l
+                x=[i for i in range(0,v[1]+1) if i not in l]
+                d[k]=x
         primdict[i]=d
     return primdict
 
@@ -423,7 +433,7 @@ def checkDataDictForType(filename='kc_data_dict.xlsx',sheet='Variables',SourceFi
     dftmp=dftmp.loc[dftmp.File==SourceFile.lower(),:]
     return dftmp.loc[dftmp.Type==return_type.lower(),'Variable'].values.tolist()
 
-def translateVarsFromDict(dforig,transDict):
+def translateVarsFromDict(dforig,transDict,use_code=False):
     '''
 
     dforig - the dataframe to translate
@@ -433,13 +443,13 @@ def translateVarsFromDict(dforig,transDict):
     dftmp=dforig.copy()
     for colname,origToNewVal in transDict.items():
         for k,v in origToNewVal.items():
-            if str(v[0]).lower()=='not in':
-                dftmp.loc[[i not in v for i in dftmp[colname]],colname]=int(k)
-            else:
+            if use_code:
                 dftmp.loc[[i in v for i in dftmp[colname]],colname]=int(k)
+            else:
+                dftmp.loc[[i in v for i in dftmp[colname]],colname]=k
     return dftmp
 
-def pivot_and_chunk(dforig,pivot_col='veh_no',idcol='id'):
+def pivot_and_chunk(dforig,pivot_col='veh_no',idcol='id',fillna=''):
     '''
 
     make the pivot_col column values into a heading - flattens the column MultiIndex. idcol does not get expanded. All other columns expands.
@@ -448,7 +458,8 @@ def pivot_and_chunk(dforig,pivot_col='veh_no',idcol='id'):
     '''
     dftmp=dforig.copy()
     dftmp=dftmp.pivot(index=idcol,columns=pivot_col)
-    dftmp=dftmp.fillna(0)
+    if fillna !='':
+        dftmp=dftmp.fillna(fillna)
     dftmp.columns=['$'.join(col).strip() if str(col[1])!='' else str(col[0]) for col in dftmp.columns.values]
     return dftmp
 
@@ -464,3 +475,85 @@ def getSourceFileFromVariable(variablename,data_dict_file='kc_data_dict.xlsx'):
     except IndexError as e:
         print(f'{variablename} does not exist in {data_dict_file}. Returning None.')
         return None
+
+def addSummaryStats(dforig,functions,postfixes='func'):
+    '''
+    Add summary stats to dforig according to columns separted by attribute$veh1, attribute$veh2, etc... only add summary stats on attribute levels
+
+    func is the *list of functions* to apply - for example: [mean, sum, np.nansum, np.nanmean, etc]
+
+    postfix is the *list* of names to add for each respective function on the column name
+    '''
+    dftmp=dforig.copy()
+    colnames=dftmp.columns.tolist()
+    colgroups=[ re.search('(.*)\$veh[1-4]_{0,1}(.*)',i) for i in colnames]
+    colgroups=set(colgroups)
+    colgroups=[i for i in colgroups if i is not None]
+    for z in colgroups:
+        r=dforig.loc[:,[True if re.search(z.group(1)+'\$veh[1-4]_{0,1}'+ z.group(2),i) else False for i in  colnames]]
+        for f,c in zip(functions,postfixes):
+            dftmp[z.group(1)+'$'+z.group(2) + '$' + c]=f(r,axis=1)
+    return dftmp 
+
+# Do you use below unless using clusters
+def ClusteraddSummaryStats(row,functions,postfixes='func'):
+    '''
+    Add summary stats to dforig according to columns separted by attribute$veh1, attribute$veh2, etc... only add summary stats on attribute levels
+
+    func is the *list of functions* to apply - for example: [mean, sum, np.nansum, np.nanmean, etc]
+
+    postfix is the *list* of names to add for each respective function on the column name
+    '''
+    colnames=row.index.tolist()
+    colgroups=[ re.search('(.*)\$veh[1-4]_{0,1}(.*)',i) for i in colnames]
+    # for i in set(colgroups):
+    rowtmp=row.copy()
+    colgroups=set(colgroups)
+    colgroups=[i for i in colgroups if i is not None]
+    for z in colgroups:
+        r=row[[True if re.search(z.group(1)+'\$veh[1-4]_{0,1}'+ z.group(2),i) else False for i in  colnames]]
+        for f,c in zip(functions,postfixes):
+            rowtmp[z.group(1)+'$'+z.group(2) + '$' + c]=f(r.dropna().astype('int'))
+    return rowtmp
+
+
+# correlation matrix functions
+def corrmatrix(df,correlation_function,ret=0,**kwargs):
+    '''
+    given the dataframe, df, go through each column and calculate the correlation_function (chisquare, kendall's Tau). Return the 'ret' # argument
+    from the results of the correlation function - for example, chi-statistics, p-value = chisquare(...) -> to get hte p-value, ret should be 1.
+    correlation, p-value = kendalltau(...) --> to get the corraltion, the ret should be 0.
+    
+    **kwargs is passed on to the correlation function for additoinal parameters.
+    
+    '''
+    cols=df.columns.tolist()
+    matrix=pd.DataFrame([],index=cols,columns=cols)
+    for c in cols:
+        for r in cols:
+            if c!=r:
+                x=df.loc[(~df[c].isnull()) & (~df[r].isnull()),c].astype('int')
+                y=df.loc[(~df[c].isnull()) & (~df[r].isnull()),r].astype('int')
+                if correlation_function == kendalltau:
+                    q=correlation_function(x,y,**kwargs)
+                else:
+                    q=correlation_function(x,y)
+                matrix.loc[r,c]=1 if np.isnan(q[ret]) else q[ret]    # the if... then statement is needed bcs scipy with p-value = 1 caculates a nan instead
+    return pd.DataFrame(matrix,index=cols,columns=cols)
+
+def calcCorrMatrix(df,groupby_var='state',kwargs={'correlation_function':chisquare,'nan_policy':'omit','ret':1}):
+    '''
+    Calcaulate the correlation matrix using corrmatrix(...) function for the entire dataframe. Then group by the groupby_var and
+    calculate the correlation matrix for each group. kwargs is a dictionary specifying the correlation function, etc.
+    '''
+    # calc for all
+    dfprim=corrmatrix(df,**kwargs).reset_index().rename({'index':'prim_var'},axis=1).melt(id_vars='prim_var') \
+           .assign(state=0,full=lambda x: [i + '-' + j for i,j in zip(x.prim_var,x.variable)])
+    
+    for i in set(df[groupby_var]):
+        dftmp=pd.DataFrame(df.loc[df[groupby_var]==i,:])
+        dftmp=corrmatrix(dftmp,**kwargs).reset_index().rename({'index':'prim_var'},axis=1).melt(id_vars='prim_var') \
+           .assign(state=i,full=lambda x: [p + '-' + q for p,q in zip(x.prim_var,x.variable)])
+        dfprim=dfprim.append(dftmp)
+    return dfprim
+    

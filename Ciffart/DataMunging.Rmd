@@ -38,6 +38,7 @@ setwd("~/NYCTrafficCollisions/Ciffart")
 codenames <- read.csv("Variable_CodeNames_Mapping.csv")
 
 ```
+
 ```{r Create Unique Id & Data Merge}
 
 person_2017$Id <- paste0("id_2017.", person_2017$ST_CASE)
@@ -59,9 +60,6 @@ merged_data <- merged_data[, setdiff(colnames(merged_data), c("RUR_URB", "FUNC_S
 
 # Final Merge
 merged_data <- rbind(merged_data, person_2014)
-
-
-
 
 ```
 
@@ -96,9 +94,55 @@ passengers <- merged_data[which(merged_data$PER_TYP != 1), ]
 
 all_dat <- rbind.data.frame(drivers, passengers)
 
-all_dat <- all_dat %>% group_by(Id) %>% mutate(rn = row_number())
+all_dat <- all_dat %>% group_by(Id) %>% arrange(PER_TYP) %>% mutate(rn = row_number())
 
 all_dat <- all_dat[which(all_dat$rn <= 4),]
+
+```
+
+```{r Recoded Data}
+# fixing data types for codenames
+codenames$Recoded.Code.Name <- as.character(codenames$Recoded.Code.Name)
+codenames$Variable <- as.character(codenames$Variable)
+codenames$Code <- as.character(codenames$Code)
+
+codenames_cat <- codenames[which(codenames$Variable.Type == "Categorical"), ]
+
+uniqvar <- c(unique(codenames$Variable),"Id", "STATE")
+
+dat_cln <- all_dat[, uniqvar]
+
+catvar <- codenames[which(codenames$Variable.Type == 'Categorical'), 'Variable']
+catvar <- as.character(catvar)
+catvar_unique <- unique(catvar)
+
+numeric_var <- c("Id", codenames[which(codenames$Variable.Type == 'Numeric'), 'Variable'])
+colnames(dat_cln)[1:3]
+for (i in colnames(dat_cln)[1:3]) {
+  # Which variable are we currently on
+  print(paste0('Variable Name: ', i))
+    # Skipping the ID section
+    if (i %in% numeric_var){
+    next
+  } else {
+    # WE only need a subset of the 
+    
+    # Replacing values in place
+  for (j in 1:dim(dat_cln)[1]){
+    if (j %% 100000 == 0){
+      print(paste0("Jth Value: ", j))
+    }
+    dat_cln[j,i] <- codenames[which(codenames$Variable == i &
+                                           codenames$Code == 
+                                             as.character(dat_cln[j,i])),"Recoded.Code.Name"]
+    
+  }
+  
+       }
+  
+  
+}
+
 
 ```
 
@@ -110,6 +154,17 @@ ggplot(data = merged_data, aes(x = REST_USE)) + geom_histogram()
 merged_data %>% group_by(REST_USE) %>% summarise(n = n())
 
 merged_data %>% group_by(ALC_STATUS) %>% summarise(n = n())
+
+merged_data %>% group_by(ATST_TYP) %>% summarise(n = n())
+
+merged_data %>% group_by(DRUG_DET) %>% summarise(n = n())
+
+merged_data %>% group_by(DOA) %>% summarise(n = n())
+
+merged_data %>% group_by(P_SF1) %>% summarise(n = n())
+
+merged_data %>% group_by(P_SF3) %>% summarise(n = n())
+
 ```
 
 
@@ -166,46 +221,7 @@ person_four$MissingAge_PersonFour <- ifelse(person_four$AGE >= 150, 1, 0)
 ```
 
 
-```{r Recoded Data}
-# fixing data types for codenames
-codenames_cat <- codenames[which(codenames$Variable.Type == "Categorical"), ]
-View(codenames_cat)
-codenames$Recoded.Code.Name <- as.character(codenames$Recoded.Code.Name)
-codenames$Variable <- as.character(codenames$Variable)
-codenames$Code <- as.numeric(codenames$Code)
 
-person_one_cat <- person_one[, c("ST_CASE", catvar_unique)]
-
-for (i in colnames(person_one_cat)) {
-  # Which variable are we currently on
-  print(paste0('Variable Name: ', i))
-    # Skipping the ID section
-    if (i == "ST_CASE"){
-    next
-  } else {
-    # WE only need a subset of the 
-    
-    # Replacing values in place
-  for (j in dim(persone_one_cat)[1]{
-    person_one_cat[j,i] <- codenames[which(Variable == i & Code == person_one_cat[]),]
-    
-  }
-  
-       }
-  
-  
-}
-
-person_one_cat[1,"PER_TYP"]
-codenames[which(codenames$Variable == "PER_TYP" & codenames$Code == as.numeric(person_one_cat[1,"PER_TYP"])), "Recoded.Code.Name"]
-
-codenames[which(codenames$Variable == "PER_TYP"), "Recoded.Code.Name" ]
-codenames[which(codenames$Code == 1), ]
-str(codenames)
-View(codenames)
-as.numeric(person_one_cat[1,"PER_TYP"])
-
-```
 
 ```{r DynamicColumns}
 
