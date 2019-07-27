@@ -1,0 +1,78 @@
+File,Category,FARS_Variable,Tableau Name
+Person,Location,STATE,State
+Person,Person,AGE,Age
+Person,Person,PER_TYP,Relation to Accident
+Person,Person,SEX,Sex
+Person,Harm Details,INJ_SEV,Injury Severity
+Person,Person Location,SEAT_POS,Seat Position
+Person,Safety Measure,REST_USE,Restraint Usage
+Person,Safety Measure,REST_MIS,Restraint Misuse
+Person,Safety Measure,AIR_BAG,Air Bag Deployment Type
+Person,Crash Result,EJECTION,Ejection
+Person,Crash Result,EJ_PATH,Ejection Path
+Person,Crash Result,EXTRICAT,Extrication
+Person,Person Condition,DRINKING,Drinking
+Person,Person Condition,ALC_DET,Alcohol Initial Determination
+Person,Person Condition,ALC_STATUS,Alcohol Test Status
+Person,Person Condition,ATST_TYP,Alcohol Test Type
+Person,Person Condition,ALC_RES,Blood Alcohol Content
+Person,Person Condition,DRUGS,Drug Presence
+Person,Person Condition,DRUG_DET,Drugs Initial Determination
+Person,Emergency Service,HOSPITAL,Transportation to Hospital
+Person,Death,DOA,Dead on Arrival
+Person,Death,DEATH_MO,Month Person Died
+Person,Death,DEATH_DA,Day Persion Died
+Person,Passenger Factors,P_SF1,Other Occupant Factors
+Person,Death,LAG_HRS,Time bet. Accident & Death
+Person,Person,RACE,Race
+Accident,Location,STATE,State
+Accident,Crash Details,VE_TOTAL,Vehicles Involved (count)
+Accident,Crash Details,VE_FORMS,Moving Vehicles Involved (count)
+Accident,,PVH_INVL,Parked/Working Vehicles (count)
+Accident,,PEDS,Pedestrians
+Accident,,PERNOTMVIT,
+Accident,,PERMVIT,
+Accident,Crash Details,PERSONS,People In Vehicles (count)
+Accident,Location,COUNTY,County
+Accident,Location,CITY,City
+Accident,Time,DAY,Crash Day
+Accident,Time,MONTH,Crash Month
+Accident,Time,YEAR,Crash Year
+Accident,Time,DAY_WEEK,Crash Day of Week
+Accident,Time,HOUR,Crash Hour
+Accident,Time,MINUTE,Crash Minute
+Accident,Road Demo,NHS,
+Accident,Location,RUR_URB,Land Use
+Accident,Road Demo,FUNC_SYS,
+Accident,Road Demo,RD_OWNER,
+Accident,Road Demo,ROUTE,
+Accident,Location,TWAY_ID,
+Accident,Location,TWAY_ID2,
+Accident,Location,MILEPT,
+Accident,Location,LATITUDE,
+Accident,Location,LONGITUD,
+Accident,Road Demo,SP_JUR,
+Accident,Crash Event,HARM_EV,
+Accident,Crash Event,MAN_COLL,
+Accident,,RELJCT1,
+Accident,,RELJCT2,
+Accident,Road Demo,TYP_INT,
+Accident,Road Demo,WRK_ZONE,
+Accident,,REL_ROAD,
+Accident,Environment Conditions,LGT_COND,
+Accident,Environment Conditions,WEATHER1,
+Accident,Environment Conditions,WEATHER2,
+Accident,Environment Conditions,WEATHER,
+Accident,,SCH_BUS,
+Accident,,RAIL,
+Accident,,NOT_HOUR,
+Accident,,NOT_MIN,
+Accident,Emergency Service,ARR_HOUR,
+Accident,Emergency Service,ARR_MIN,
+Accident,Emergency Service,HOSP_HR,
+Accident,Emergency Service,HOSP_MN,
+Accident,,CF1,
+Accident,,CF2,
+Accident,,CF3,
+Accident,,FATALS,
+Accident,,DRUNK_DR,

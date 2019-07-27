@@ -1,0 +1,110 @@
+File,Category,FARS_Variable,Tableau Name
+Person,Location,STATE,State
+Person,Person,AGE,Age
+Person,Person,PER_TYP,Relation to Accident
+Person,Person,SEX,Sex
+Person,Harm Details,INJ_SEV,Injury Severity
+Person,Person Location,SEAT_POS,Seat Position
+Person,Safety Measure,REST_USE,Restraint Usage
+Person,Safety Measure,REST_MIS,Restraint Misuse
+Person,Safety Measure,AIR_BAG,Air Bag Deployment Type
+Person,Crash Result,EJECTION,Ejection
+Person,Crash Result,EJ_PATH,Ejection Path
+Person,Crash Result,EXTRICAT,Extrication
+Person,Person Condition,DRINKING,Drinking
+Person,Person Condition,ALC_DET,Alcohol Initial Determination
+Person,Person Condition,ALC_STATUS,Alcohol Test Status
+Person,Person Condition,ATST_TYP,Alcohol Test Type
+Person,Person Condition,ALC_RES,Blood Alcohol Content
+Person,Person Condition,DRUGS,Drug Presence
+Person,Person Condition,DRUG_DET,Drugs Initial Determination
+Person,Emergency Service,HOSPITAL,Transportation to Hospital
+Person,Death Details,DOA,Dead on Arrival
+Person,Death Details,DEATH_MO,Month Person Died
+Person,Death Details,DEATH_DA,Day Persion Died
+Person,Passenger Factors,P_SF1,Other Occupant Factors
+Person,Death Details,LAG_HRS,Time bet. Accident & Death
+Person,Person,RACE,Race
+Accident,Location,STATE,State
+Accident,Crash Details,VE_TOTAL,Vehicles Involved (count)
+Accident,Crash Details,VE_FORMS,Moving Vehicles Involved (count)
+Accident,Crash Details,PVH_INVL,Parked/Working Vehicles (count)
+Accident,Crash Details,PEDS,Pedestrians
+Accident,Crash Details,PERNOTMVIT,Persons Not in Motor Vehicles (count)
+Accident,Crash Details,PERMVIT,Persons in Motor vehicles in Transport (count)
+Accident,Crash Details,PERSONS,People In Vehicles (count)
+Accident,Location,COUNTY,County
+Accident,Location,CITY,City
+Accident,Time,DAY,Crash Day
+Accident,Time,MONTH,Crash Month
+Accident,Time,YEAR,Crash Year
+Accident,Time,DAY_WEEK,Crash Day of Week
+Accident,Time,HOUR,Crash Hour
+Accident,Time,MINUTE,Crash Minute
+Accident,Road Demo,NHS,National Highway System
+Accident,Location,RUR_URB,Land Use
+Accident,Road Demo,FUNC_SYS,Functional System
+Accident,Road Demo,RD_OWNER,Road Ownership
+Accident,Road Demo,ROUTE,Route Signing
+Accident,Location,TWAY_ID,Trafficway Identifier
+Accident,Location,TWAY_ID2,Trafficway Identifier
+Accident,Location,MILEPT,Milepoint on trafficway
+Accident,Location,LATITUDE,Latitude
+Accident,Location,LONGITUD,Longitude
+Accident,Road Demo,SP_JUR,Road Jurisdiction
+Accident,Crash Event,HARM_EV,First Harmful Event
+Accident,Crash Event,MAN_COLL,Manner of Collision
+Accident,Crash Details,RELJCT1,Relation to Junction - Within Interchange Area
+Accident,Crash Details,RELJCT2,Relation to Junction - Specific Location
+Accident,Road Demo,TYP_INT,Type of Intersection
+Accident,Road Demo,WRK_ZONE,Work Zone
+Accident,Crash Details,REL_ROAD,Relation to Trafficway
+Accident,Environment Conditions,LGT_COND,Light Condition
+Accident,Environment Conditions,WEATHER1,Atmospheric Conditions
+Accident,Environment Conditions,WEATHER2,Atmospheric Conditions
+Accident,Environment Conditions,WEATHER,Atmospheric Conditions
+Accident,Crash Details,SCH_BUS,School Bus Related
+Accident,Crash Details,RAIL,Rail Grade Crossing
+Accident,Emergency Service,NOT_HOUR,Hour of Notification
+Accident,Emergency Service,NOT_MIN,Minut of Notification
+Accident,Emergency Service,ARR_HOUR,Arrival Hour
+Accident,Emergency Service,ARR_MIN,Arrival Minute
+Accident,Emergency Service,HOSP_HR,Hosptial Arrival Hour
+Accident,Emergency Service,HOSP_MN,Hosptial Arrival Minute
+Accident,Crash Details,CF1,Crash Factor 1
+Accident,Crash Details,CF2,Crash Factor 2
+Accident,Crash Details,CF3,Crash Factor 3
+Accident,Death Details,FATALS,Fatalities
+Accident,Driver Condition,DRUNK_DR,Drunk Driver Involvement
+vehicle,Person,numoccs,Number of occupants
+vehicle,Crash Details,hit_run,Hit & run
+vehicle,Vehicle Information,reg_stat,State Registration
+vehicle,Vehicle Information,owner,Vehicle owner type
+vehicle,Vehicle Information,make,Brand of the car
+vehicle,Vehicle Information,model,Model of the Car
+vehicle,Vehicle Information,body_typ,Type of vehicle
+vehicle,Vehicle Information,mod_year,Model year
+vehicle,Vehicle Information,gvwr,Gross weight vehicle rating
+vehicle,Crash Event,trav_sp,Travelling speed
+vehicle,Crash Event,rollover,Vehicle rolloveer
+vehicle,Crash Event,rolinloc,Rollover location
+vehicle,Crash Event,deformed,Extent of vehicle damage
+vehicle,Crash Event,m_harm,Most harmful event/Primary reason for crash
+vehicle,Roadway Conditions,vtrafway,Type of roadway (Ex. 2-way with median)
+vehicle,Roadway Conditions,vnum_lan,Number of lanes on roadway
+vehicle,Roadway Conditions,vspd_lim,Speed limit at crash
+vehicle,Roadway Conditions,valign,Direction of roadway
+vehicle,Roadway Conditions,vprofile,Slope of roadway
+vehicle,Roadway Conditions,vsurcond,Roadway surface condition
+vehicle,Roadway Conditions,vtrafcon,Traffic signals at crash location
+vehicle,Roadway Conditions,vtcont_f,Traffic signal status during crash
+vehicle,Crash Event,p_crash1,Event prior to driver recognition of unavoidable crash
+vehicle,Crash Event,p_crash2,Event causing the inevitability of the crash
+vehicle,Crash Event,p_crash3,Attempted avoidance maneuver
+vehicle,Crash Event,pcrash4,vehicle movment after initial impact
+vehicle,Crash Event,pcrash5,vehicle location after initial impact
+vehicle,Crash Event,acc_type,Crash type
+veh_aux,Driver Condition,a_drdro,Drowsy Driver
+veh_aux,Crash Event,a_imp1,Initial Impact Point
+veh_aux,Crash Event,a_imp2,Principle Impact Point
+veh_aux,Driver Condition,a_lic_s,License Status
