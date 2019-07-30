@@ -39,7 +39,7 @@ The clustering methodology based on HDBScan can be described as follows:
 \end{enumerate}
 From a statistical perspective, the yearly clustering algorithm should identify a false positive cluster only 1 out of 20 times if random points from that particular year's dataset to form a a cluster. The false positive cluster rate for time-based polygon clusters will be the same assuming random points are selected from all available years.
 
-An example is provided below using an intersection of 2 years. Each colored polygon is a significant cluster polygon for each individual year. However, only the red colored data points are significant clusters across time.
+An example is provided below using an intersection of 2 years. Each colored polygon is a significant cluster polygon for each individual year. However, only the red colored data points are significant clusters across time. Note that the red data points include both rollovers and non-rollover fatalities. The areas with the group of red data points, however, has a statistically siginficant different mean from all other areas in the state.
 \begin{center}
 \includegraphics[scale=0.4]{technical.png}
 \end{center}
