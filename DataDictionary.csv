@@ -76,35 +76,38 @@ Accident,Crash Details,CF2,Crash Factor 2
 Accident,Crash Details,CF3,Crash Factor 3
 Accident,Death Details,FATALS,Fatalities
 Accident,Driver Condition,DRUNK_DR,Drunk Driver Involvement
-vehicle,Person,numoccs,Number of occupants
-vehicle,Crash Details,hit_run,Hit & run
-vehicle,Vehicle Information,reg_stat,State Registration
-vehicle,Vehicle Information,owner,Vehicle owner type
-vehicle,Vehicle Information,make,Brand of the car
-vehicle,Vehicle Information,model,Model of the Car
-vehicle,Vehicle Information,body_typ,Type of vehicle
-vehicle,Vehicle Information,mod_year,Model year
-vehicle,Vehicle Information,gvwr,Gross weight vehicle rating
-vehicle,Crash Event,trav_sp,Travelling speed
-vehicle,Crash Event,rollover,Vehicle rolloveer
-vehicle,Crash Event,rolinloc,Rollover location
-vehicle,Crash Event,deformed,Extent of vehicle damage
-vehicle,Crash Event,m_harm,Most harmful event/Primary reason for crash
-vehicle,Roadway Conditions,vtrafway,Type of roadway (Ex. 2-way with median)
-vehicle,Roadway Conditions,vnum_lan,Number of lanes on roadway
-vehicle,Roadway Conditions,vspd_lim,Speed limit at crash
-vehicle,Roadway Conditions,valign,Direction of roadway
-vehicle,Roadway Conditions,vprofile,Slope of roadway
-vehicle,Roadway Conditions,vsurcond,Roadway surface condition
-vehicle,Roadway Conditions,vtrafcon,Traffic signals at crash location
-vehicle,Roadway Conditions,vtcont_f,Traffic signal status during crash
-vehicle,Crash Event,p_crash1,Event prior to driver recognition of unavoidable crash
-vehicle,Crash Event,p_crash2,Event causing the inevitability of the crash
-vehicle,Crash Event,p_crash3,Attempted avoidance maneuver
-vehicle,Crash Event,pcrash4,vehicle movment after initial impact
-vehicle,Crash Event,pcrash5,vehicle location after initial impact
-vehicle,Crash Event,acc_type,Crash type
-veh_aux,Driver Condition,a_drdro,Drowsy Driver
-veh_aux,Crash Event,a_imp1,Initial Impact Point
-veh_aux,Crash Event,a_imp2,Principle Impact Point
-veh_aux,Driver Condition,a_lic_s,License Status
+vehicle,Person,NUMOCCS,Number of occupants
+vehicle,Crash Details,HIT_RUN,Hit & run
+vehicle,Vehicle Information,REG_STAT,State Registration
+vehicle,Vehicle Information,OWNER,Vehicle owner type
+vehicle,Vehicle Information,MAKE,Brand of the car
+vehicle,Vehicle Information,MODEL,Model of the Car
+vehicle,Vehicle Information,BODY_TYP,Type of vehicle
+vehicle,Vehicle Information,MOD_YEAR,Model year
+vehicle,Vehicle Information,GVWR,Gross weight vehicle rating
+vehicle,Crash Event,TRAV_SP,Travelling speed
+vehicle,Crash Event,ROLLOVER,Vehicle rolloveer
+vehicle,Crash Event,ROLINLOC,Rollover location
+vehicle,Crash Event,DEFORMED,Extent of vehicle damage
+vehicle,Crash Event,M_HARM,Most harmful event/Primary reason for crash
+vehicle,Roadway Conditions,VTRAFWAY,Type of roadway (Ex. 2-way with median)
+vehicle,Roadway Conditions,VNUM_LAN,Number of lanes on roadway
+vehicle,Roadway Conditions,VSPD_LIM,Speed limit at crash
+vehicle,Roadway Conditions,VALIGN,Direction of roadway
+vehicle,Roadway Conditions,VPROFILE,Slope of roadway
+vehicle,Roadway Conditions,VSURCOND,Roadway surface condition
+vehicle,Roadway Conditions,VTRAFCON,Traffic signals at crash location
+vehicle,Roadway Conditions,VTCONT_F,Traffic signal status during crash
+vehicle,Crash Event,P_CRASH1,Event prior to driver recognition of unavoidable crash
+vehicle,Crash Event,P_CRASH2,Event causing the inevitability of the crash
+vehicle,Crash Event,P_CRASH3,Attempted avoidance maneuver
+vehicle,Crash Event,PCRASH4,vehicle movment after initial impact
+vehicle,Crash Event,PCRASH5,vehicle location after initial impact
+vehicle,Crash Event,ACC_TYPE,Crash type
+veh_aux,Driver Condition,A_DRDRO,Drowsy Driver
+veh_aux,Crash Event,A_IMP1,Initial Impact Point
+veh_aux,Crash Event,A_IMP2,Principle Impact Point
+veh_aux,Driver Condition,A_LIC_S,License Status
+distract,Driver Condition,MDRDSTRD,Distraction Source
+damage,Crash Event,MDAREAS,Damaged Areas of Vehicle(s)
+maneuver,Crash Event,MDRMANAV,Maneuver to Avoid Collision

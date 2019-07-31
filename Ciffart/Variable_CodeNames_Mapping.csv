@@ -257,3 +257,52 @@ RACE,78,Asian or Pacific Islander,Categorical,4,Asian
 RACE,97,Multiple Races,Categorical,5,Other
 RACE,98,All Other Races,Categorical,5,Other
 RACE,99,Unknown,Categorical,6,Unknown
+MDRDSTRD,0,Not Distracted,Categorical,0,Not Distracted
+MDRDSTRD,1,Looked But Did Not See,Categorical,3,Distraction/Inattention
+MDRDSTRD,3,By Other Occupants,Categorical,1,Other Occupants
+MDRDSTRD,4,By a Moving Object in Vehicle,Categorical,3,Distraction/Inattention
+MDRDSTRD,5,While Talking or Listening to Cellular Phone,Categorical,2,Cell Phone/Device
+MDRDSTRD,6,While Manipulating Cellular Phone,Categorical,2,Cell Phone/Device
+MDRDSTRD,7,While Adjusting Audio or Climate controls,Categorical,5,Other
+MDRDSTRD,8,While Using other Component/controls integral to vehicle,Categorical,5,Other
+MDRDSTRD,10,while using or eaching for device/object brought into vehicle,Categorical,2,Cell Phone/Device
+MDRDSTRD,12,"Distracted by Outside Person, Event or Object",Categorical,3,Distraction/Inattention
+MDRDSTRD,13,Eating Drinking,Categorical,4,Ingestion Related
+MDRDSTRD,14,Smoking Related,Categorical,4,Ingestion Related
+MDRDSTRD,15,other cellular phone related,Categorical,2,Cell Phone/Device
+MDRDSTRD,16,no driver present/unkown if driver present,Categorical,5,Other
+MDRDSTRD,17,Distraction/Inattention,Categorical,3,Distraction/Inattention
+MDRDSTRD,18,Distraction/Careless,Categorical,3,Distraction/Inattention
+MDRDSTRD,19,Careless/Inattentive,Categorical,3,Distraction/Inattention
+MDRDSTRD,92,"Distraction/Inattention, Details Unknown",Categorical,3,Distraction/Inattention
+MDRDSTRD,93,"Inattention, Details Unknown",Categorical,3,Distraction/Inattention
+MDRDSTRD,96,Not Reported,Categorical,6,Unknown
+MDRDSTRD,97,Lost in Thought,Categorical,3,Distraction/Inattention
+MDRDSTRD,98,Other,Categorical,5,Other
+MDRDSTRD,99,Unknown,Categorical,6,Unknown
+MDAREAS,1,Front,Categorical,1,Front
+MDAREAS,2,Right Side,Categorical,2,Right Side
+MDAREAS,3,Right Side,Categorical,2,Right Side
+MDAREAS,4,Right Side,Categorical,2,Right Side
+MDAREAS,5,Rear,Categorical,4,Rear
+MDAREAS,6,Rear,Categorical,4,Rear
+MDAREAS,7,Rear,Categorical,4,Rear
+MDAREAS,8,Left Side,Categorical,3,Left Side
+MDAREAS,9,Left Side,Categorical,3,Left Side
+MDAREAS,10,Left Side,Categorical,3,Left Side
+MDAREAS,11,Front,Categorical,1,Front
+MDAREAS,12,Front,Categorical,1,Front
+MDAREAS,13,Top,Categorical,5,Other
+MDAREAS,14,Undercarriage,Categorical,5,Undercarriage
+MDAREAS,15,No Damage,Categorical,5,No Damage
+MDAREAS,99,Unknown,Categorical,6,Unknown
+MDRMANAV,0,Driver Did Not Maneuver to Avoid,Categorical,1,No Maneuver
+MDRMANAV,1,Object,Categorical,4,Other
+MDRMANAV,2,Poor Road Conditions,Categorical,4,Other
+MDRMANAV,3,Live Animal,Categorical,4,Other
+MDRMANAV,4,Motor Vehicle,Categorical,2,Motor Vehicle
+MDRMANAV,5,Pedestrian,Categorical,3,Pedestrian
+MDRMANAV,92,Phantom/Non-Contact Motor Vehicle,Categorical,5,Phantom
+MDRMANAV,95,No Driver Present/Unknown If Driver Present,Categorical,6,Unknown
+MDRMANAV,98,Not Reported,Categorical,6,Unknown
+MDRMANAV,99,Unknown,Categorical,6,Unknown
