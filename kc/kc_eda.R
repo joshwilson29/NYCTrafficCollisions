@@ -2,6 +2,8 @@ library(dplyr)
 library(ggplot2)
 library(lubridate)
 
+
+# for correlation stuff - not used
 setwd('~/Documents/Classes/W210 - Capstone/NYCTrafficCollisions/')
 df=read.csv('kc/kc_tmp.csv')
 #cor.test(df$m_harm.Moving.Vehicle.any,df$owner.Private.Owner.any,method='kendall')
@@ -92,10 +94,13 @@ print_all_xtabs = function(dftmp){
   }
 }
 
+
+#  For EDA - used
+
 # for (i in names(df)) {
 #   eda(df['state'],df[i],'state',i)
 # }
-setwd('~/Documents/Classes/W210 - Capstone/NYCTrafficCollisions/')
+setwd('~/Documents/Classes/W210 - Capstone/NYCTrafficCollisions/kc')
 df=read.csv('kc_eda_vehicle.csv')
 df$tstamp=strptime(as.factor(df$tstamp),'%Y-%m-%d %H:%M:%S')
 df$year=year(df$tstamp)

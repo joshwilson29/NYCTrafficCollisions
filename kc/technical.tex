@@ -10,6 +10,7 @@
 
 %  \newpage
 \section{General Overview}
+
  There is an extensive literature in traffic management on how to identify and to quantify hotspots, which are locations that are particularly dense with accidents or with fatalities. Our proposed hotspot analysis employs a novel algorithm, HDBScan, to the FARS data set. This is the first documented implementation of HDBScan to the hotspot problem and is consequently different from some of the more commonly accepted measures of fatalizes/mile across roadways. Fatalities/mile, for example, struggles to account for the features (e.g. time, presence of alcohol, demographic variables of drivers) of the crash, because it only considers the density of the occurrences on a stretch of road. On the other hand, the HDBScan algorithm has been designed to incorporate a host of features when creating its clusters. As a result, the user is able to devote more time to focus on identifying the leading factors associated with fatal accidents, which could lead to benefits in deploying solutions to those areas.
 
 Further difficulties in hotspot detection stem from year-over-year variability in traffic patterns and subsequent distributions of accidents. It has been noted that hotspots may disappear and reappear, when looking at data on a year over year basis. For example, an algorithm could decide that a certain area is a hotspot on odd numbered years and not on even numbered years. This complexity in determining persistent clusters can be an acute challenge for traffic engineers and for policy experts who advise committees on budget allocation.
@@ -19,6 +20,7 @@ Unsupervised learning and data mining efforts have produced numerous types of cl
 
 \section{HDBScan}
 HDBScan (hierarchical density based scan) was chosen as the clustering algorithm. HDBScan is a clustering algorithm based on density. It is non-parametric and shapewise unconstrained. The algorithm is also consistent and stable. Repeated runs of the algorithm will always provide the same results unlike some of the algorithms mentioned above. Additionally, it can classify data points as not in any cluster based on cluster stability and density.  HDBScan can succintly be described as clustering based on how close the data points are relative to each other in a given area.
+
 
 HDBScan begins by taking $n$ samples closest points for each data point. The $n$ sample circlular space radius is called the core distance. After the core distances has been determined, the algorithm computes the reachability for all data points. Reachability is defined as the maximum distance between the 2 point or core distance. A hierachical tree is built based on reachability metric. Clusters are determined based on stability of the parent tree structure compared to the children node tree structurei.\footnote{For a more detailed discussion, please refer to the following link -  https://hdbscan.readthedocs.io/en/latest/how\_hdbscan\_works.html.}
 
