@@ -306,3 +306,129 @@ MDRMANAV,92,Phantom/Non-Contact Motor Vehicle,Categorical,5,Phantom
 MDRMANAV,95,No Driver Present/Unknown If Driver Present,Categorical,6,Unknown
 MDRMANAV,98,Not Reported,Categorical,6,Unknown
 MDRMANAV,99,Unknown,Categorical,6,Unknown
+PEDS,0,Pedestrians Involved in Accident,Numeric,,
+DRUNK_DR,0,Number of Drunk Drives Involved,Numeric,,
+MAN_COLL,0,Not a Collision with a Motor Vehicle In-Transport,Categorical,0,Not a Collision
+MAN_COLL,1,Front-to-Rear,Categorical,1,Front-to-Rear
+MAN_COLL,2,Front-to-Front,Categorical,2,Front-to-Front
+MAN_COLL,6,Angle,Categorical,3,Angle
+MAN_COLL,7,Sideswipe-Same Direction,Categorical,4,Sideswipe-Same Direction
+MAN_COLL,8,Sideswipe-Opposite Direction,Categorical,5,Sideswipe-Opposite Direction
+MAN_COLL,9,Rear-to-Side,Categorical,6,Rear-to-Side
+MAN_COLL,10,Rear-to-Rear,Categorical,7,Rear-to-Rear
+MAN_COLL,11,Other,Categorical,8,Other
+MAN_COLL,98,Not Reported,Categorical,9,Unknown
+MAN_COLL,99,Unknown,Categorical,9,Unknown
+HARM_EV,1,Rollover/Overturn,Categorical,1,Non-Collision Harmful Event
+HARM_EV,2,Fire/Explosion,Categorical,1,Non-Collision Harmful Event
+HARM_EV,3,Immersion or Partial Immersion,Categorical,1,Non-Collision Harmful Event
+HARM_EV,4,Gas Inhalation,Categorical,1,Non-Collision Harmful Event
+HARM_EV,51,Jackknife (harmful to this vehicle),Categorical,1,Non-Collision Harmful Event
+HARM_EV,6,Injured in Vehicle (Non-Collision),Categorical,1,Non-Collision Harmful Event
+HARM_EV,44,"Pavement Surface Irregularities (Ruts, Potholes, Grates, etc.)",Categorical,1,Non-Collision Harmful Event
+HARM_EV,7,Other Non-Collision,Categorical,1,Non-Collision Harmful Event
+HARM_EV,16,Thrown or Falling Object,Categorical,1,Non-Collision Harmful Event
+HARM_EV,72,Cargo/Equipment Loss or Shift (harmful to this vehicle),Categorical,1,Non-Collision Harmful Event
+HARM_EV,5,Fell/Jumped from Vehicle,Categorical,1,Non-Collision Harmful Event
+HARM_EV,12,Motor Vehicle In-Transport,Categorical,2,Collision with Motor Vehicle In-Transport
+HARM_EV,54,"Motor Vehicle In-Transport Strikes or is Struck by Cargo, Persons, or Objects Set-in-Motion
+from/by Another Motor Vehicle In-Transport",Categorical,2,Collision with Motor Vehicle In-Transport
+HARM_EV,55,Motor Vehicle in Motion Outside the Trafficway,Categorical,2,Collision with Motor Vehicle In-Transport
+HARM_EV,8,Pedestrian,Categorical,3,Collision with Object Not Fixed
+HARM_EV,9,Pedalcyclist,Categorical,3,Collision with Object Not Fixed
+HARM_EV,10,Railway Vehicle,Categorical,3,Collision with Object Not Fixed
+HARM_EV,74,Road,Categorical,3,Collision with Object Not Fixed
+HARM_EV,11,Live Animal,Categorical,3,Collision with Object Not Fixed
+HARM_EV,49,Ridden Animal or Animal Drawn Conveyance,Categorical,3,Collision with Object Not Fixed
+HARM_EV,18,Other Object (Not Fixed),Categorical,3,Collision with Object Not Fixed
+HARM_EV,15,Non-Motorist On Personal Conveyance,Categorical,3,Collision with Object Not Fixed
+HARM_EV,14,Parked Motor Vehicle,Categorical,3,Collision with Object Not Fixed
+HARM_EV,45,Working Motor Vehicle,Categorical,3,Collision with Object Not Fixed
+HARM_EV,73,Object That Had Fallen from Motor Vehicle In-Transport,Categorical,3,Collision with Object Not Fixed
+HARM_EV,91,Unknown Object Not Fixed,Categorical,3,Collision with Object Not Fixed
+HARM_EV,17,Boulder,Categorical,4,Collision with Fixed Object
+HARM_EV,19,Building,Categorical,4,Collision with Fixed Object
+HARM_EV,58,Ground,Categorical,4,Collision with Fixed Object
+HARM_EV,20,Impact Attenuator/Crash Cushion,Categorical,4,Collision with Fixed Object
+HARM_EV,50,Bridge Overhead Structure,Categorical,4,Collision with Fixed Object
+HARM_EV,21,Bridge Pier or Support,Categorical,4,Collision with Fixed Object
+HARM_EV,23,Bridge Rail (Includes Parapet),Categorical,4,Collision with Fixed Object
+HARM_EV,24,Guardrail Face,Categorical,4,Collision with Fixed Object
+HARM_EV,52,Guardrail End,Categorical,4,Collision with Fixed Object
+HARM_EV,25,Concrete Traffic Barrier,Categorical,4,Collision with Fixed Object
+HARM_EV,57,Cable Barrier,Categorical,4,Collision with Fixed Object
+HARM_EV,26,Other Traffic Barrier,Categorical,4,Collision with Fixed Object
+HARM_EV,59,Traffic Sign Support,Categorical,4,Collision with Fixed Object
+HARM_EV,46,Traffic Signal Support,Categorical,4,Collision with Fixed Object
+HARM_EV,30,Utility Pole/Light Support,Categorical,4,Collision with Fixed Object
+HARM_EV,31,"Other Post, Other Pole, or Other Supports",Categorical,4,Collision with Fixed Object
+HARM_EV,32,Culvert,Categorical,4,Collision with Fixed Object
+HARM_EV,33,Curb,Categorical,4,Collision with Fixed Object
+HARM_EV,34,Ditch,Categorical,4,Collision with Fixed Object
+HARM_EV,35,Embankment,Categorical,4,Collision with Fixed Object
+HARM_EV,38,Fence,Categorical,4,Collision with Fixed Object
+HARM_EV,39,Wall,Categorical,4,Collision with Fixed Object
+HARM_EV,40,Fire Hydrant,Categorical,4,Collision with Fixed Object
+HARM_EV,41,Shrubbery,Categorical,4,Collision with Fixed Object
+HARM_EV,42,Tree (Standing Only),Categorical,4,Collision with Fixed Object
+HARM_EV,48,Snow Bank,Categorical,4,Collision with Fixed Object
+HARM_EV,53,Mail Box,Categorical,4,Collision with Fixed Object
+HARM_EV,43,Other Fixed Object,Categorical,4,Collision with Fixed Object
+HARM_EV,93,Unknown Fixed Object,Categorical,4,Collision with Fixed Object
+RELJCT2,1,Non-Junction,Categorical,1,Non-Junction
+RELJCT2,2,Intersection,Categorical,2,Intersection
+RELJCT2,3,Intersection-Related,Categorical,2,Intersection
+RELJCT2,5,Entrance/Exit Ramp Related,Categorical,3,Ramp
+RELJCT2,20,Entrance/Exit Ramp,Categorical,3,Ramp
+RELJCT2,6,Railway Grade Crossing,Categorical,5,Other
+RELJCT2,7,Crossover-Related,Categorical,5,Other
+RELJCT2,4,Driveway Access,Categorical,4,Driveway
+RELJCT2,8,Driveway Access Related,Categorical,4,Driveway
+RELJCT2,16,Shared-Use Path Crossing,Categorical,5,Other
+RELJCT2,17,Acceleration/Deceleration Lane,Categorical,5,Other
+RELJCT2,18,Through Roadway,Categorical,5,Other
+RELJCT2,19,Other location within interchange area,Categorical,5,Other
+RELJCT2,98,Not Reported,Categorical,6,Unknown
+RELJCT2,99,Unknown,Categorical,6,Unknown
+TYP_INT,1,Not an Intersection,Categorical,1,Not an Intersection
+TYP_INT,2,Four-Way Intersection,Categorical,2,Four-Way Intersection
+TYP_INT,3,T-Intersection,Categorical,3,T-Intersection
+TYP_INT,4,Y-Intersection,Categorical,4,Y-Intersection
+TYP_INT,5,Traffic Circle,Categorical,5,Traffic Circle
+TYP_INT,6,Roundabout,Categorical,6,Roundabout
+TYP_INT,7,"Five-Point, or More",Categorical,7,"Five-Point, or More"
+TYP_INT,10,L-Intersection,Categorical,8,L-Intersection
+TYP_INT,98,Not Reported,Categorical,9,Unknown
+TYP_INT,99,Unknown,Categorical,9,Unknown
+LGT_COND,1,Daylight,Categorical,1,Daylight
+LGT_COND,2,Dark - Not Lighted,Categorical,2,Dark - Not Lighted
+LGT_COND,3,Dark - Lighted,Categorical,3,Dark - Lighted
+LGT_COND,6,Dark - Unknown Lighting,Categorical,4,Dark - Unknown Lighting
+LGT_COND,4,Dawn,Categorical,5,Dawn
+LGT_COND,5,Dusk,Categorical,6,Dusk
+LGT_COND,7,Other,Categorical,7,Other
+LGT_COND,8,Not Reported,Categorical,8,Unknown
+LGT_COND,9,Unknown,Categorical,8,Unknown
+WEATHER,0,No Additional Atmospheric Conditions,Categorical,0,No Weather
+WEATHER,1,Clear,Categorical,1,Clear
+WEATHER,10,Cloudy,Categorical,10,Cloudy
+WEATHER,2,Rain,Categorical,2,Rain
+WEATHER,3,Sleet or Hail,Categorical,3,"Sleet, Hail, Freezing Rain"
+WEATHER,12,Freezing Rain or Drizzle,Categorical,3,"Sleet, Hail, Freezing Rain"
+WEATHER,4,Snow,Categorical,4,Snow
+WEATHER,11,Blowing Snow,Categorical,4,Snow
+WEATHER,5,"Fog, Smog, Smoke",Categorical,5,"Fog, Smog, Smoke"
+WEATHER,6,Severe Crosswinds,Categorical,6,Severe Crosswinds
+WEATHER,7,"Blowing, Sand, Soil, Dirt",Categorical,7,"Blowing, Sand, Soil, Dirt"
+WEATHER,8,Other,Categorical,8,Other
+WEATHER,98,Not Reported,Categorical,9,Unknown
+WEATHER,99,Unknown,Categorical,9,Unknown
+ROUTE,1,Interstate,Categorical,0,Interstate
+ROUTE,2,U.S. Highway,Categorical,1,Highway
+ROUTE,3,State Highway,Categorical,2,Highway
+ROUTE,4,County Road,Categorical,3,Country Road
+ROUTE,5,Local Street,Categorical,4,Local Road
+ROUTE,6,Local Street - Municipality,Categorical,5,Local Road
+ROUTE,7,Local Street - Frontage Road,Categorical,6,Local Road
+ROUTE,8,Other,Categorical,7,Other
+ROUTE,9,Unknown,Categorical,8,Unknown
