@@ -8,7 +8,7 @@ output: html_document
 ```{r packages, include = F, warnings = F}
 
 # Packages for performing analyses
-pkgs <- c('ggplot2', 'dplyr', 'cluster', 'factoextra', 'caret', 'klaR', 'FactoMineR')
+pkgs <- c('ggplot2', 'dplyr', 'cluster', 'factoextra', 'caret', 'klaR', 'FactoMineR', 'reshape', 'tidyr')
 
 # Installs all of the packages
 lapply(pkgs, require, character.only = TRUE)
@@ -207,60 +207,60 @@ person_four <- dat_cln[which(dat_cln$rn == 4), ]
 
 # code teenagers, 20 - 30, 30 - 40, 40+
 
-person_one$Person_One_AGE_Child <- ifelse(person_one$AGE < 16, 1, 0)
-person_two$Person_Two_AGE_Child <- ifelse(person_two$AGE < 16, 1, 0)
-person_three$Person_Three_AGE_Child <- ifelse(person_three$AGE < 16, 1, 0)
-person_four$Person_Four_AGE_Child <- ifelse(person_four$AGE < 16, 1, 0)
+person_one$person_one_AGE_Child <- ifelse(person_one$AGE < 16, 1, 0)
+person_two$person_two_AGE_Child <- ifelse(person_two$AGE < 16, 1, 0)
+person_three$person_three_AGE_Child <- ifelse(person_three$AGE < 16, 1, 0)
+person_four$person_four_AGE_Child <- ifelse(person_four$AGE < 16, 1, 0)
 
-person_one$Person_One_AGE_Teenage <- ifelse(person_one$AGE < 20, 1, 0)
-person_two$Person_Two_AGE_Teenage <- ifelse(person_two$AGE < 20, 1, 0)
-person_three$Person_Three_AGE_Teenage <- ifelse(person_three$AGE < 20, 1, 0)
-person_four$Person_Four_AGE_Teenage <- ifelse(person_four$AGE < 20, 1, 0)
+person_one$person_one_AGE_Teenage <- ifelse(person_one$AGE < 20, 1, 0)
+person_two$person_two_AGE_Teenage <- ifelse(person_two$AGE < 20, 1, 0)
+person_three$person_three_AGE_Teenage <- ifelse(person_three$AGE < 20, 1, 0)
+person_four$person_four_AGE_Teenage <- ifelse(person_four$AGE < 20, 1, 0)
 
-person_one$Person_One_AGE_Twenties <- ifelse(person_one$AGE >= 20 & person_one$AGE < 30, 1, 0)
-person_two$Person_Two_AGE_Twenties <- ifelse(person_two$AGE >= 20 & person_two$AGE < 30, 1, 0)
-person_three$Person_Three_AGE_Twenties <- ifelse(person_three$AGE >= 20 & person_three$AGE < 30, 1, 0)
-person_four$Person_Four_AGE_Twenties <- ifelse(person_four$AGE >= 20 & person_four$AGE < 30, 1, 0)
+person_one$person_one_AGE_Twenties <- ifelse(person_one$AGE >= 20 & person_one$AGE < 30, 1, 0)
+person_two$person_two_AGE_Twenties <- ifelse(person_two$AGE >= 20 & person_two$AGE < 30, 1, 0)
+person_three$person_three_AGE_Twenties <- ifelse(person_three$AGE >= 20 & person_three$AGE < 30, 1, 0)
+person_four$person_four_AGE_Twenties <- ifelse(person_four$AGE >= 20 & person_four$AGE < 30, 1, 0)
 
-person_one$Person_One_AGE_Thirties <- ifelse(person_one$AGE >= 30 & person_one$AGE < 40, 1, 0)
-person_two$Person_Two_AGE_Thirties <- ifelse(person_two$AGE >= 30 & person_two$AGE < 40, 1, 0)
-person_three$Person_Three_AGE_Thirties <- ifelse(person_three$AGE >= 30 & person_three$AGE < 40, 1, 0)
-person_four$Person_Four_AGE_Thirties <- ifelse(person_four$AGE >= 30 & person_four$AGE < 40, 1, 0)
+person_one$person_one_AGE_Thirties <- ifelse(person_one$AGE >= 30 & person_one$AGE < 40, 1, 0)
+person_two$person_two_AGE_Thirties <- ifelse(person_two$AGE >= 30 & person_two$AGE < 40, 1, 0)
+person_three$person_three_AGE_Thirties <- ifelse(person_three$AGE >= 30 & person_three$AGE < 40, 1, 0)
+person_four$person_four_AGE_Thirties <- ifelse(person_four$AGE >= 30 & person_four$AGE < 40, 1, 0)
 
-person_one$Person_One_AGE_FortyPlus <- ifelse(person_one$AGE >= 40 & person_one$AGE < 150, 1, 0)
-person_two$Person_Two_AGE_FortyPlus <- ifelse(person_two$AGE >= 40 & person_two$AGE < 150, 1, 0)
-person_three$Person_Three_AGE_FortyPlus <- ifelse(person_three$AGE >= 40 & person_three$AGE < 150, 1, 0)
-person_four$Person_Four_AGE_FortyPlus <- ifelse(person_four$AGE >= 40 & person_four$AGE < 150, 1, 0)
+person_one$person_one_AGE_FortyPlus <- ifelse(person_one$AGE >= 40 & person_one$AGE < 150, 1, 0)
+person_two$person_two_AGE_FortyPlus <- ifelse(person_two$AGE >= 40 & person_two$AGE < 150, 1, 0)
+person_three$person_three_AGE_FortyPlus <- ifelse(person_three$AGE >= 40 & person_three$AGE < 150, 1, 0)
+person_four$person_four_AGE_FortyPlus <- ifelse(person_four$AGE >= 40 & person_four$AGE < 150, 1, 0)
 
-person_one$Person_One_AGE_MissingAge <- ifelse(person_one$AGE >= 150, 1, 0)
-person_two$Person_Two_AGE_MissingAge <- ifelse(person_two$AGE >= 150, 1, 0)
-person_three$Person_Three_AGE_MissingAge <- ifelse(person_three$AGE >= 150, 1, 0)
-person_four$Person_Four_AGE_MissingAge <- ifelse(person_four$AGE >= 150, 1, 0)
+person_one$person_one_AGE_MissingAge <- ifelse(person_one$AGE >= 150, 1, 0)
+person_two$person_two_AGE_MissingAge <- ifelse(person_two$AGE >= 150, 1, 0)
+person_three$person_three_AGE_MissingAge <- ifelse(person_three$AGE >= 150, 1, 0)
+person_four$person_four_AGE_MissingAge <- ifelse(person_four$AGE >= 150, 1, 0)
 
 # ALC RES
 
 #ggplot(data = dat_cln, aes(x = ALC_RES)) + geom_histogram()
 
 # Low 0 - 0.05
-person_one$Person_One_LowBAC <- ifelse(person_one$ALC_RES >= 0 & person_one$ALC_RES < 0.06, 1, 0)
-person_two$Person_Two_LowBAC <- ifelse(person_two$ALC_RES >= 0 & person_two$ALC_RES < 0.06, 1, 0)
-person_three$Person_Three_LowBAC <- ifelse(person_three$ALC_RES >= 0 & person_three$ALC_RES < 0.06, 1, 0)
-person_four$Person_Four_LowBAC <- ifelse(person_four$ALC_RES >= 0 & person_four$ALC_RES < 0.06, 1, 0)
+person_one$person_one_LowBAC <- ifelse(person_one$ALC_RES >= 0 & person_one$ALC_RES < 0.06, 1, 0)
+person_two$person_two_LowBAC <- ifelse(person_two$ALC_RES >= 0 & person_two$ALC_RES < 0.06, 1, 0)
+person_three$person_three_LowBAC <- ifelse(person_three$ALC_RES >= 0 & person_three$ALC_RES < 0.06, 1, 0)
+person_four$person_four_LowBAC <- ifelse(person_four$ALC_RES >= 0 & person_four$ALC_RES < 0.06, 1, 0)
 
-person_one$Person_One_MedBAC <- ifelse(person_one$ALC_RES >= 0.06 & person_one$ALC_RES < 0.17, 1, 0)
-person_two$Person_Two_MedBAC <- ifelse(person_two$ALC_RES >= 0.06 & person_two$ALC_RES < 0.17, 1, 0)
-person_three$Person_Three_MedBAC <- ifelse(person_three$ALC_RES >= 0.06 & person_three$ALC_RES < 0.17, 1, 0)
-person_four$Person_Four_MedBAC <- ifelse(person_four$ALC_RES >= 0.06 & person_four$ALC_RES < 0.17, 1, 0)
+person_one$person_one_MedBAC <- ifelse(person_one$ALC_RES >= 0.06 & person_one$ALC_RES < 0.17, 1, 0)
+person_two$person_two_MedBAC <- ifelse(person_two$ALC_RES >= 0.06 & person_two$ALC_RES < 0.17, 1, 0)
+person_three$person_three_MedBAC <- ifelse(person_three$ALC_RES >= 0.06 & person_three$ALC_RES < 0.17, 1, 0)
+person_four$person_four_MedBAC <- ifelse(person_four$ALC_RES >= 0.06 & person_four$ALC_RES < 0.17, 1, 0)
 
-person_one$Person_One_HighBAC <- ifelse(person_one$ALC_RES >= 0.17 & person_one$ALC_RES < 0.31, 1, 0)
-person_two$Person_Two_HighBAC <- ifelse(person_two$ALC_RES >= 0.17 & person_two$ALC_RES < 0.31, 1, 0)
-person_three$Person_Three_HighBAC <- ifelse(person_three$ALC_RES >= 0.17 & person_three$ALC_RES < 0.31, 1, 0)
-person_four$Person_Four_HighBAC <- ifelse(person_four$ALC_RES >= 0.17 & person_four$ALC_RES < 0.31, 1, 0)
+person_one$person_one_HighBAC <- ifelse(person_one$ALC_RES >= 0.17 & person_one$ALC_RES < 0.31, 1, 0)
+person_two$person_two_HighBAC <- ifelse(person_two$ALC_RES >= 0.17 & person_two$ALC_RES < 0.31, 1, 0)
+person_three$person_three_HighBAC <- ifelse(person_three$ALC_RES >= 0.17 & person_three$ALC_RES < 0.31, 1, 0)
+person_four$person_four_HighBAC <- ifelse(person_four$ALC_RES >= 0.17 & person_four$ALC_RES < 0.31, 1, 0)
 
-person_one$Person_One_SevBAC <- ifelse(person_one$ALC_RES >= 0.31 & person_one$ALC_RES < 0.9, 1, 0)
-person_two$Person_Two_SevBAC <- ifelse(person_two$ALC_RES >= 0.31 & person_two$ALC_RES < 0.9, 1, 0)
-person_three$Person_Three_SevBAC <- ifelse(person_three$ALC_RES >= 0.31 & person_three$ALC_RES < 0.9, 1, 0)
-person_four$Person_Four_SevBAC <- ifelse(person_four$ALC_RES >= 0.31 & person_four$ALC_RES < 0.9, 1, 0)
+person_one$person_one_SevBAC <- ifelse(person_one$ALC_RES >= 0.31 & person_one$ALC_RES < 0.9, 1, 0)
+person_two$person_two_SevBAC <- ifelse(person_two$ALC_RES >= 0.31 & person_two$ALC_RES < 0.9, 1, 0)
+person_three$person_three_SevBAC <- ifelse(person_three$ALC_RES >= 0.31 & person_three$ALC_RES < 0.9, 1, 0)
+person_four$person_four_SevBAC <- ifelse(person_four$ALC_RES >= 0.31 & person_four$ALC_RES < 0.9, 1, 0)
 
 # DEATH_DA - keep as is
 
@@ -268,25 +268,25 @@ person_four$Person_Four_SevBAC <- ifelse(person_four$ALC_RES >= 0.31 & person_fo
 #ggplot(data = dat_cln, aes(x = LAG_HRS)) + geom_histogram()
 #summary(dat_cln$LAG_HRS)
 
-person_one$Person_One_ZeroLag <- ifelse(person_one$LAG_HRS == 0, 1, 0)
-person_two$Person_Two_ZeroLag <- ifelse(person_two$LAG_HRS == 0, 1, 0)
-person_three$Person_Three_ZeroLag <- ifelse(person_three$LAG_HRS == 0, 1, 0)
-person_four$Person_Four_ZeroLag <- ifelse(person_four$LAG_HRS == 0, 1, 0)
+person_one$person_one_ZeroLag <- ifelse(person_one$LAG_HRS == 0, 1, 0)
+person_two$person_two_ZeroLag <- ifelse(person_two$LAG_HRS == 0, 1, 0)
+person_three$person_three_ZeroLag <- ifelse(person_three$LAG_HRS == 0, 1, 0)
+person_four$person_four_ZeroLag <- ifelse(person_four$LAG_HRS == 0, 1, 0)
 
-person_one$Person_One_Lag_WithinDay <- ifelse(person_one$LAG_HRS >= 0 & person_one$LAG_HRS < 24, 1, 0)
-person_two$Person_Two_Lag_WithinDay <- ifelse(person_two$LAG_HRS >= 0 & person_two$LAG_HRS < 24, 1, 0)
-person_three$Person_Three_Lag_WithinDay <- ifelse(person_three$LAG_HRS >= 0& person_three$LAG_HRS < 24, 1, 0)
-person_four$Person_Four_Lag_WithinDay <- ifelse(person_four$LAG_HRS >= 0 & person_four$LAG_HRS < 24, 1, 0)
+person_one$person_one_Lag_WithinDay <- ifelse(person_one$LAG_HRS >= 0 & person_one$LAG_HRS < 24, 1, 0)
+person_two$person_two_Lag_WithinDay <- ifelse(person_two$LAG_HRS >= 0 & person_two$LAG_HRS < 24, 1, 0)
+person_three$person_three_Lag_WithinDay <- ifelse(person_three$LAG_HRS >= 0& person_three$LAG_HRS < 24, 1, 0)
+person_four$person_four_Lag_WithinDay <- ifelse(person_four$LAG_HRS >= 0 & person_four$LAG_HRS < 24, 1, 0)
 
-person_one$Person_One_Lag_GreaterDay <- ifelse(person_one$LAG_HRS >= 24  & person_one$LAG_HRS < 999, 1, 0)
-person_two$Person_Two_Lag_GreaterDay <- ifelse(person_two$LAG_HRS >= 24 & person_two$LAG_HRS < 999, 1, 0)
-person_three$Person_Three_Lag_GreaterDay <- ifelse(person_three$LAG_HRS >= 24 & person_three$LAG_HRS < 999, 1, 0)
-person_four$Person_Four_Lag_GreaterDay <- ifelse(person_four$LAG_HRS >= 24 & person_four$LAG_HRS < 999, 1, 0)
+person_one$person_one_Lag_GreaterDay <- ifelse(person_one$LAG_HRS >= 24  & person_one$LAG_HRS < 999, 1, 0)
+person_two$person_two_Lag_GreaterDay <- ifelse(person_two$LAG_HRS >= 24 & person_two$LAG_HRS < 999, 1, 0)
+person_three$person_three_Lag_GreaterDay <- ifelse(person_three$LAG_HRS >= 24 & person_three$LAG_HRS < 999, 1, 0)
+person_four$person_four_Lag_GreaterDay <- ifelse(person_four$LAG_HRS >= 24 & person_four$LAG_HRS < 999, 1, 0)
 
-person_one$Person_One_Lag_Unknown <- ifelse(person_one$LAG_HRS == 999, 1, 0)
-person_two$Person_Two_Lag_Unknown <- ifelse(person_two$LAG_HRS == 999, 1, 0)
-person_three$Person_Three_Lag_Unknown <- ifelse(person_three$LAG_HRS == 999, 1, 0)
-person_four$Person_Four_Lag_Unknown <- ifelse(person_four$LAG_HRS == 999, 1, 0)
+person_one$person_one_Lag_Unknown <- ifelse(person_one$LAG_HRS == 999, 1, 0)
+person_two$person_two_Lag_Unknown <- ifelse(person_two$LAG_HRS == 999, 1, 0)
+person_three$person_three_Lag_Unknown <- ifelse(person_three$LAG_HRS == 999, 1, 0)
+person_four$person_four_Lag_Unknown <- ifelse(person_four$LAG_HRS == 999, 1, 0)
 
 ```
 
@@ -332,21 +332,21 @@ dynamic_col <- function(data = df, col_name = col_name){
 
 person_one <- dynamic_col(data = person_one, col_name = catvar_unique)
 colnames(person_one) <- gsub(x = colnames(person_one), "data", replacement = 'person_one_')
-colnames(person_one)
+#colnames(person_one)
 
 person_two <- dynamic_col(data = person_two, col_name = catvar_unique)
 colnames(person_two) <- gsub(x = colnames(person_two), "data", replacement = 'person_two_')
-colnames(person_two)
+#colnames(person_two)
 
 person_three <- dynamic_col(data = person_three, col_name = catvar_unique)
 colnames(person_three) <- gsub(x = colnames(person_three), "data", replacement = 'person_three_')
-colnames(person_three)
+#colnames(person_three)
 
 person_four <- dynamic_col(data = person_four, col_name = catvar_unique)
 colnames(person_four) <- gsub(x = colnames(person_four), "data", replacement = 'person_four_')
-colnames(person_four)
+#colnames(person_four)
 
-col_to_remove <- c('STATE', 'AGE','ALC_RES','DEATH_DA','LAG_HRS','PER_TYP','SEX','INJ_SEV','SEAT_POS','REST_USE','REST_MIS','AIR_BAG','EJECTION','EJ_PATH','EXTRICAT','DRINKING','ALC_DET','ALC_STATUS','ATST_TYP','DRUGS','DRUG_DET','HOSPITAL','DOA','DEATH_MO','rn','RACE')
+col_to_remove <- c('STATE','AGE','ALC_RES','DEATH_DA','LAG_HRS','PER_TYP','SEX','INJ_SEV','SEAT_POS','REST_USE','REST_MIS','AIR_BAG','EJECTION','EJ_PATH','EXTRICAT','DRINKING','ALC_DET','ALC_STATUS','ATST_TYP','DRUGS','DRUG_DET','HOSPITAL','DOA','DEATH_MO','rn','RACE')
 
 person_one <- person_one[,setdiff(colnames(person_one), col_to_remove)]
 colnames(person_one)
@@ -370,7 +370,7 @@ head(final_df, n = 10)
 
 colnames(final_df)
 
-write.csv(final_df, file = "PersonUnPivoted.csv", na = "")
+
 
 
 ```
@@ -386,8 +386,8 @@ df_colnames <- gsub(x = df_colnames, "person_three_", replacement = '')
 
 df_colnames <- gsub(x = df_colnames, "person_four_", replacement = '')
 
+colnames_unique <- unique(df_colnames)
 
-grepl(df(colnames()))
 
 any_col <- function(data = df, col_name = col_name){
   #print(data)
@@ -426,12 +426,587 @@ for( i in df_colnames[x]){
   
 }
 }
+df_colnames
 
-col <- match_col(10)
-col
-final_df[which(final_df$PersonOne_SevBAC == 1),col]
 
-final_df[, col] %>% replace(is.na(.),0) %>% summarise_all(list(sum))
-colnames(final_df)[]
+for(i in colnames_unique){
+  print(paste0(i, "_any"))
+final_df <- final_df %>% mutate(!!paste0(i,"_any") := ifelse(dplyr::select(., contains(i)) %>% rowSums(., na.rm = T) > 0, 1, 0))
+}
 
+final_df$AGE_Child_any
+
+write.csv(final_df, file = "PersonUnPivoted.csv", na = "")
+
+```
+
+
+```{r Person Wide to Long}
+
+final_colnames <- colnames(final_df)[grepl('any', colnames(final_df))]
+any_df <- final_df[, c('Id',final_colnames)]
+colnames(any_df)[120]
+any_df$Id <- as.factor(any_df$Id)
+str(any_df)
+data_long <- gather(any_df, VariableName, Any_Value, AGE_Child_any:RACE_Other_any, factor_key = T )
+head(data_long)
+write.csv(data_long, file = "PersonPivoted.csv", na = "")
+```
+
+
+## Distract Data Set
+
+```{r Data Load Distract}
+
+
+# change directory for loading data
+setwd("~/NYCTrafficCollisions/data/FARS2017NationalCSV")
+
+distract2017 <- read.csv("Distract.csv")
+distract2016 <- read.csv("Distract_2016.csv")
+distract2015 <- read.csv("Distract_2015.csv")
+distract2014 <- read.csv("Distract_2014.csv")
+
+distract2017$Id <- paste0("id_2017.", distract2017$ST_CASE)
+distract2016$Id <- paste0("id_2016.", distract2016$ST_CASE)
+distract2015$Id <- paste0("id_2015.", distract2015$ST_CASE)
+distract2014$Id <- paste0("id_2014.", distract2014$ST_CASE)
+
+merged_data <- rbind(distract2017, distract2016, distract2015, distract2014)
+
+```
+
+```{r Check Distributions}
+
+# Distribution of cars
+
+summary(merged_data$VEH_NO)
+
+merged_data %>% group_by(VEH_NO) %>% summarise(n = n())
+
+ggplot(data = merged_data, aes(x = VEH_NO)) + geom_bar()
+
+# Eliminating anything beyond car 4
+
+dat_veh <- merged_data[which(merged_data$VEH_NO <= 4),]
+
+# Now looking at the distract variable
+
+dat_veh %>% group_by(MDRDSTRD) %>% summarise(n = n())
+
+distract_codenames <- codenames[which(codenames$Variable == "MDRDSTRD"),c("Code", "Recoded.Code.Name")]
+colnames(distract_codenames)[1] <- "MDRDSTRD"
+```
+
+
+```{r Recoding}
+
+dist_recoded <- left_join(dat_veh, distract_codenames, by = "MDRDSTRD")
+head(dist_recoded, n= 10)
+
+dist_recoded <- dist_recoded %>% group_by(Id, VEH_NO) %>% mutate(rn = row_number())
+
+# There are 159 cases for which we have duplicate within a vehicle
+
+dim(dist_recoded[which(dist_recoded$rn > 1),])[1]
+
+# splitting the data set into 4 for each vehicle
+
+dist_1 <- dist_recoded[which(dist_recoded$VEH_NO == 1), c("Id", "Recoded.Code.Name")]
+dist_2 <- dist_recoded[which(dist_recoded$VEH_NO == 2), c("Id", "Recoded.Code.Name")]
+dist_3 <- dist_recoded[which(dist_recoded$VEH_NO == 3), c("Id", "Recoded.Code.Name")]
+dist_4 <- dist_recoded[which(dist_recoded$VEH_NO == 4), c("Id", "Recoded.Code.Name")]
+
+colnames(dist_1)[2] <- "MDRDSTRD"
+colnames(dist_2)[2] <- "MDRDSTRD"
+colnames(dist_3)[2] <- "MDRDSTRD"
+colnames(dist_4)[2] <- "MDRDSTRD"
+
+
+
+
+```
+
+
+```{r dynamic col for distract}
+
+dist_1 <- dynamic_col(data = dist_1, col_name = "MDRDSTRD")
+dist_2 <- dynamic_col(data = dist_2, col_name = "MDRDSTRD")
+dist_3 <- dynamic_col(data = dist_3, col_name = "MDRDSTRD")
+dist_4 <- dynamic_col(data = dist_4, col_name = "MDRDSTRD")
+
+colnames(dist_1) <- gsub(x = colnames(dist_1), "data", replacement = 'vehicle_one_')
+colnames(dist_2) <- gsub(x = colnames(dist_2), "data", replacement = 'vehicle_two_')
+colnames(dist_3) <- gsub(x = colnames(dist_3), "data", replacement = 'vehicle_three_')
+colnames(dist_4) <- gsub(x = colnames(dist_4), "data", replacement = 'vehicle_four_')
+
+
+#View(dist_1)
+
+dist_1 <- dist_1[,setdiff(colnames(dist_1), "MDRDSTRD")]
+dist_2 <- dist_2[,setdiff(colnames(dist_2), "MDRDSTRD")]
+dist_3 <- dist_3[,setdiff(colnames(dist_3), "MDRDSTRD")]
+dist_4 <- dist_4[,setdiff(colnames(dist_4), "MDRDSTRD")]
+
+
+```
+
+```{r}
+
+final_df <- left_join(dist_1, dist_2, by = "Id")
+
+final_df <- left_join(final_df, dist_3, by = "Id")
+
+final_df <- left_join(final_df, dist_4, by = "Id")
+
+head(final_df, n = 10)
+
+colnames(final_df)
+
+
+```
+
+
+```{r Vehicle Any}
+
+# Taking out Vehicle_x from colnames
+df_colnames <- colnames(final_df)
+df_colnames <- df_colnames[1:length(df_colnames)]
+
+df_colnames <- gsub(x = df_colnames, "vehicle_one_", replacement = '')
+df_colnames <- gsub(x = df_colnames, "vehicle_two_", replacement = '')
+df_colnames <- gsub(x = df_colnames, "vehicle_three_", replacement = '')
+
+df_colnames <- gsub(x = df_colnames, "vehicle_four_", replacement = '')
+
+colnames_unique <- unique(df_colnames)
+
+for(i in colnames_unique[2:length(colnames_unique)]){
+  print(paste0(i, "_any"))
+final_df <- final_df %>% mutate(!!paste0(i,"_any") := ifelse(dplyr::select(., contains(i)) %>% rowSums(., na.rm = T) > 0, 1, 0))
+}
+
+final_df <- final_df %>% group_by(Id) %>% mutate(rn = row_number())
+final_df <- final_df[which(final_df$rn <= 1),]
+
+
+write.csv(final_df, file = "Distract_Wide.csv", na = "")
+```
+
+
+```{r Vehicle Wide to Long}
+
+final_colnames <- colnames(final_df)[grepl('any', colnames(final_df))]
+any_df <- final_df[, c('Id',final_colnames)]
+any_df <- any_df[, setdiff(colnames(any_df), "MDRDSTRD_NA_any")]
+
+# We want hte Id to be read in as a factor for 'gather'
+any_df$Id <- as.factor(any_df$Id)
+data_long <- gather(any_df, VariableName, Any_Value, "MDRDSTRD_Not Distracted_any":"MDRDSTRD_Other_any", factor_key = T )
+
+write.csv(data_long, file = "Distract_Long.csv", na = "")
+```
+
+
+## Damage Data Set
+
+
+```{r Data Load Damage}
+
+
+# change directory for loading data
+setwd("~/NYCTrafficCollisions/data/FARS2017NationalCSV")
+
+damage2017 <- read.csv("Damage.csv")
+damage2016 <- read.csv("Damage_2016.csv")
+damage2015 <- read.csv("Damage_2015.csv")
+damage2014 <- read.csv("Damage_2014.csv")
+
+damage2017$Id <- paste0("id_2017.", damage2017$ST_CASE)
+damage2016$Id <- paste0("id_2016.", damage2016$ST_CASE)
+damage2015$Id <- paste0("id_2015.", damage2015$ST_CASE)
+damage2014$Id <- paste0("id_2014.", damage2014$ST_CASE)
+
+merged_data <- rbind(damage2017, damage2016, damage2015, damage2014)
+
+```
+
+
+```{r Damage Data Cleaning}
+
+head(merged_data)
+
+# Relatively Uniform across the clock points, with head on collisions being the highest by far
+
+merged_data %>% filter(VEH_NO == 1) %>% group_by(MDAREAS) %>% summarise(n = n())
+#View(merged_data)
+# Eliminating anything beyond car 4
+
+dat_veh <- merged_data[which(merged_data$VEH_NO <= 4),]
+#View(dat_veh)
+
+damage_codenames <- codenames[which(codenames$Variable == "MDAREAS"),c("Code", "Recoded.Code.Name")]
+colnames(damage_codenames)[1] <- "MDAREAS"
+dam_recoded <- left_join(dat_veh, damage_codenames, by = "MDAREAS")
+head(dam_recoded)
+
+```
+
+```{r}
+
+# splitting the data set into 4 for each vehicle
+
+dam_1 <- dam_recoded[which(dam_recoded$VEH_NO == 1), c("Id", "Recoded.Code.Name")]
+dam_2 <- dam_recoded[which(dam_recoded$VEH_NO == 2), c("Id", "Recoded.Code.Name")]
+dam_3 <- dam_recoded[which(dam_recoded$VEH_NO == 3), c("Id", "Recoded.Code.Name")]
+dam_4 <- dam_recoded[which(dam_recoded$VEH_NO == 4), c("Id", "Recoded.Code.Name")]
+
+colnames(dam_1)[2] <- "MDAREAS"
+colnames(dam_2)[2] <- "MDAREAS"
+colnames(dam_3)[2] <- "MDAREAS"
+colnames(dam_4)[2] <- "MDAREAS"
+```
+
+```{r dynamic col for damage}
+
+dam_1 <- dynamic_col(data = dam_1, col_name = "MDAREAS")
+dam_2 <- dynamic_col(data = dam_2, col_name = "MDAREAS")
+dam_3 <- dynamic_col(data = dam_3, col_name = "MDAREAS")
+dam_4 <- dynamic_col(data = dam_4, col_name = "MDAREAS")
+
+head(dam_1)
+
+colnames(dam_1) <- gsub(x = colnames(dam_1), "data", replacement = 'vehicle_one_')
+colnames(dam_2) <- gsub(x = colnames(dam_2), "data", replacement = 'vehicle_two_')
+colnames(dam_3) <- gsub(x = colnames(dam_3), "data", replacement = 'vehicle_three_')
+colnames(dam_4) <- gsub(x = colnames(dam_4), "data", replacement = 'vehicle_four_')
+
+
+#View(dam_1)
+
+dam_1 <- dam_1[,setdiff(colnames(dam_1), "MDAREAS")]
+dam_2 <- dam_2[,setdiff(colnames(dam_2), "MDAREAS")]
+dam_3 <- dam_3[,setdiff(colnames(dam_3), "MDAREAS")]
+dam_4 <- dam_4[,setdiff(colnames(dam_4), "MDAREAS")]
+```
+
+```{r}
+
+
+dam_1[which(as.character(dam_1$Id) == 'id_2017.10011'),]
+head(dam_1)
+
+```
+
+
+
+```{r}
+
+dam_1unique <- aggregate(dam_1$vehicle_one_MDAREAS_Front, by = list(Id = dam_1$Id), FUN=sum)
+dam_1unique <- left_join(dam_1unique, aggregate(dam_1$'vehicle_one_MDAREAS_Right Side', by = list(Id = dam_1$Id), FUN=sum), by = "Id")
+dam_1unique <- left_join(dam_1unique, aggregate(dam_1$vehicle_one_MDAREAS_Rear, by = list(Id = dam_1$Id), FUN=sum), by = "Id")
+dam_1unique <- left_join(dam_1unique, aggregate(dam_1$'vehicle_one_MDAREAS_Left Side', by = list(Id = dam_1$Id), FUN=sum), by = "Id")
+dam_1unique <- left_join(dam_1unique, aggregate(dam_1$vehicle_one_MDAREAS_Other, by = list(Id = dam_1$Id), FUN=sum), by = "Id")
+dam_1unique <- left_join(dam_1unique, aggregate(dam_1$vehicle_one_MDAREAS_Unknown, by = list(Id = dam_1$Id), FUN=sum), by = "Id")
+dam_1unique <- left_join(dam_1unique, aggregate(dam_1$'vehicle_one_MDAREAS_No Damage', by = list(Id = dam_1$Id), FUN=sum), by = "Id")
+
+colnames(dam_1unique) <- c("Id", "vehicle_one_MDAREAS_Front", "vehicle_one_MDAREAS_Right_Side",
+                               "vehicle_one_MDAREAS_Rear", "vehicle_one_MDAREAS_Left_Side", "vehicle_one_MDAREAS_Other", "vehicle_one_MDAREAS_Unknown", 'vehicle_one_MDAREAS_No_Damage')
+
+
+# Vehicle 2
+
+dam_2unique <- aggregate(dam_2$vehicle_two_MDAREAS_Front, by = list(Id = dam_2$Id), FUN=sum)
+dam_2unique <- left_join(dam_2unique, aggregate(dam_2$'vehicle_two_MDAREAS_Right Side', by = list(Id = dam_2$Id), FUN=sum), by = "Id")
+dam_2unique <- left_join(dam_2unique, aggregate(dam_2$vehicle_two_MDAREAS_Rear, by = list(Id = dam_2$Id), FUN=sum), by = "Id")
+dam_2unique <- left_join(dam_2unique, aggregate(dam_2$'vehicle_two_MDAREAS_Left Side', by = list(Id = dam_2$Id), FUN=sum), by = "Id")
+dam_2unique <- left_join(dam_2unique, aggregate(dam_2$vehicle_two_MDAREAS_Other, by = list(Id = dam_2$Id), FUN=sum), by = "Id")
+dam_2unique <- left_join(dam_2unique, aggregate(dam_2$vehicle_two_MDAREAS_Unknown, by = list(Id = dam_2$Id), FUN=sum), by = "Id")
+dam_2unique <- left_join(dam_2unique, aggregate(dam_2$'vehicle_two_MDAREAS_No Damage', by = list(Id = dam_2$Id), FUN=sum), by = "Id")
+
+colnames(dam_2unique) <- c("Id", "vehicle_two_MDAREAS_Front", "vehicle_two_MDAREAS_Right_Side",
+                               "vehicle_two_MDAREAS_Rear", "vehicle_two_MDAREAS_Left_Side", "vehicle_two_MDAREAS_Other", "vehicle_two_MDAREAS_Unknown", 'vehicle_two_MDAREAS_No_Damage')
+
+# Vehicle 3
+
+dam_3unique <- aggregate(dam_3$vehicle_three_MDAREAS_Front, by = list(Id = dam_3$Id), FUN=sum)
+dam_3unique <- left_join(dam_3unique, aggregate(dam_3$'vehicle_three_MDAREAS_Right Side', by = list(Id = dam_3$Id), FUN=sum), by = "Id")
+dam_3unique <- left_join(dam_3unique, aggregate(dam_3$vehicle_three_MDAREAS_Rear, by = list(Id = dam_3$Id), FUN=sum), by = "Id")
+dam_3unique <- left_join(dam_3unique, aggregate(dam_3$'vehicle_three_MDAREAS_Left Side', by = list(Id = dam_3$Id), FUN=sum), by = "Id")
+dam_3unique <- left_join(dam_3unique, aggregate(dam_3$vehicle_three_MDAREAS_Other, by = list(Id = dam_3$Id), FUN=sum), by = "Id")
+dam_3unique <- left_join(dam_3unique, aggregate(dam_3$vehicle_three_MDAREAS_Unknown, by = list(Id = dam_3$Id), FUN=sum), by = "Id")
+dam_3unique <- left_join(dam_3unique, aggregate(dam_3$'vehicle_three_MDAREAS_No Damage', by = list(Id = dam_3$Id), FUN=sum), by = "Id")
+
+colnames(dam_3unique) <- c("Id", "vehicle_three_MDAREAS_Front", "vehicle_three_MDAREAS_Right_Side",
+                               "vehicle_three_MDAREAS_Rear", "vehicle_three_MDAREAS_Left_Side", "vehicle_three_MDAREAS_Other", "vehicle_three_MDAREAS_Unknown", 'vehicle_three_MDAREAS_No_Damage')
+
+# Vehicle 4
+
+dam_4unique <- aggregate(dam_4$vehicle_four_MDAREAS_Front, by = list(Id = dam_4$Id), FUN=sum)
+dam_4unique <- left_join(dam_4unique, aggregate(dam_4$'vehicle_four_MDAREAS_Right Side', by = list(Id = dam_4$Id), FUN=sum), by = "Id")
+dam_4unique <- left_join(dam_4unique, aggregate(dam_4$vehicle_four_MDAREAS_Rear, by = list(Id = dam_4$Id), FUN=sum), by = "Id")
+dam_4unique <- left_join(dam_4unique, aggregate(dam_4$'vehicle_four_MDAREAS_Left Side', by = list(Id = dam_4$Id), FUN=sum), by = "Id")
+dam_4unique <- left_join(dam_4unique, aggregate(dam_4$vehicle_four_MDAREAS_Other, by = list(Id = dam_4$Id), FUN=sum), by = "Id")
+dam_4unique <- left_join(dam_4unique, aggregate(dam_4$vehicle_four_MDAREAS_Unknown, by = list(Id = dam_4$Id), FUN=sum), by = "Id")
+dam_4unique <- left_join(dam_4unique, aggregate(dam_4$'vehicle_four_MDAREAS_No Damage', by = list(Id = dam_4$Id), FUN=sum), by = "Id")
+
+colnames(dam_4unique) <- c("Id", "vehicle_four_MDAREAS_Front", "vehicle_four_MDAREAS_Right_Side",
+                               "vehicle_four_MDAREAS_Rear", "vehicle_four_MDAREAS_Left_Side", "vehicle_four_MDAREAS_Other", "vehicle_four_MDAREAS_Unknown", 'vehicle_four_MDAREAS_No_Damage')
+```
+
+```{r Damage Merge}
+dam_1unique$Id <- as.character(dam_1unique$Id)
+dam_2unique$Id <- as.character(dam_2unique$Id)
+dam_3unique$Id <- as.character(dam_3unique$Id)
+dam_4unique$Id <- as.character(dam_4unique$Id)
+
+
+
+final_df <- left_join(dam_1unique, dam_2unique, by = "Id")
+
+final_df <- left_join(final_df, dam_3unique, by = "Id")
+
+final_df <- left_join(final_df, dam_4unique, by = "Id")
+
+head(final_df, n = 10)
+
+```
+
+```{r Vehicle Any}
+
+# Taking out Vehicle_x from colnames
+df_colnames <- colnames(final_df)
+df_colnames <- df_colnames[1:length(df_colnames)]
+
+df_colnames <- gsub(x = df_colnames, "vehicle_one_", replacement = '')
+df_colnames <- gsub(x = df_colnames, "vehicle_two_", replacement = '')
+df_colnames <- gsub(x = df_colnames, "vehicle_three_", replacement = '')
+
+df_colnames <- gsub(x = df_colnames, "vehicle_four_", replacement = '')
+
+colnames_unique <- unique(df_colnames)
+
+for(i in colnames_unique[2:length(colnames_unique)]){
+  print(paste0(i, "_any"))
+final_df <- final_df %>% mutate(!!paste0(i,"_any") := ifelse(dplyr::select(., contains(i)) %>% rowSums(., na.rm = T) > 0, 1, 0))
+}
+
+final_df <- final_df %>% group_by(Id) %>% mutate(rn = row_number())
+final_df <- final_df[which(final_df$rn <= 1),]
+
+head(final_df)
+
+write.csv(final_df, file = "Damage_Wide.csv", na = "")
+```
+
+
+
+```{r Damage Wide to Long}
+
+final_colnames <- colnames(final_df)[grepl('any', colnames(final_df))]
+any_df <- final_df[, c('Id',final_colnames)]
+
+final_colnames
+# We want hte Id to be read in as a factor for 'gather'
+any_df$Id <- as.factor(any_df$Id)
+data_long <- gather(any_df, VariableName, Any_Value, "MDAREAS_Front_any":"MDAREAS_No_Damage_any", factor_key = T )
+
+write.csv(data_long, file = "Damage_Long.csv", na = "")
+```
+
+
+## Maneuver
+
+
+## Damage Data Set
+
+
+```{r Data Load Damage}
+
+
+# change directory for loading data
+setwd("~/NYCTrafficCollisions/data/FARS2017NationalCSV")
+
+maneuver2017 <- read.csv("Maneuver.csv")
+maneuver2016 <- read.csv("Maneuver_2016.csv")
+maneuver2015 <- read.csv("Maneuver_2015.csv")
+maneuver2014 <- read.csv("Maneuver_2014.csv")
+
+maneuver2017$Id <- paste0("id_2017.", maneuver2017$ST_CASE)
+maneuver2016$Id <- paste0("id_2016.", maneuver2016$ST_CASE)
+maneuver2015$Id <- paste0("id_2015.", maneuver2015$ST_CASE)
+maneuver2014$Id <- paste0("id_2014.", maneuver2014$ST_CASE)
+
+merged_data <- rbind(maneuver2017, maneuver2016, maneuver2015, maneuver2014)
+
+```
+
+
+```{r Damage Data Cleaning}
+
+head(merged_data)
+
+# Relatively Uniform across the clock points, with head on collisions being the highest by far
+
+merged_data %>% filter(VEH_NO == 1) %>% group_by(MDRMANAV) %>% summarise(n = n())
+#View(merged_data)
+# Eliminating anything beyond car 4
+
+dat_veh <- merged_data[which(merged_data$VEH_NO <= 4),]
+#View(dat_veh)
+
+maneuver_codenames <- codenames[which(codenames$Variable == "MDRMANAV"),c("Code", "Recoded.Code.Name")]
+colnames(maneuver_codenames)[1] <- "MDRMANAV"
+man_recoded <- left_join(dat_veh, maneuver_codenames, by = "MDRMANAV")
+head(man_recoded, n =20)
+
+```
+
+```{r}
+
+# splitting the data set into 4 for each vehicle
+
+man_1 <- man_recoded[which(man_recoded$VEH_NO == 1), c("Id", "Recoded.Code.Name")]
+man_2 <- man_recoded[which(man_recoded$VEH_NO == 2), c("Id", "Recoded.Code.Name")]
+man_3 <- man_recoded[which(man_recoded$VEH_NO == 3), c("Id", "Recoded.Code.Name")]
+man_4 <- man_recoded[which(man_recoded$VEH_NO == 4), c("Id", "Recoded.Code.Name")]
+
+colnames(man_1)[2] <- "MDRMANAV"
+colnames(man_2)[2] <- "MDRMANAV"
+colnames(man_3)[2] <- "MDRMANAV"
+colnames(man_4)[2] <- "MDRMANAV"
+```
+
+```{r dynamic col for damage}
+
+man_1 <- dynamic_col(data = man_1, col_name = "MDRMANAV")
+man_2 <- dynamic_col(data = man_2, col_name = "MDRMANAV")
+man_3 <- dynamic_col(data = man_3, col_name = "MDRMANAV")
+man_4 <- dynamic_col(data = man_4, col_name = "MDRMANAV")
+
+head(man_1)
+
+colnames(man_1) <- gsub(x = colnames(man_1), "data", replacement = 'vehicle_one_')
+colnames(man_2) <- gsub(x = colnames(man_2), "data", replacement = 'vehicle_two_')
+colnames(man_3) <- gsub(x = colnames(man_3), "data", replacement = 'vehicle_three_')
+colnames(man_4) <- gsub(x = colnames(man_4), "data", replacement = 'vehicle_four_')
+
+
+#View(man_1)
+
+man_1 <- man_1[,setdiff(colnames(man_1), "MDRMANAV")]
+man_2 <- man_2[,setdiff(colnames(man_2), "MDRMANAV")]
+man_3 <- man_3[,setdiff(colnames(man_3), "MDRMANAV")]
+man_4 <- man_4[,setdiff(colnames(man_4), "MDRMANAV")]
+```
+
+
+```{r}
+
+man_1unique <- aggregate(man_1$vehicle_one_MDRMANAV_Unknown, by = list(Id = man_1$Id), FUN=sum)
+man_1unique <- left_join(man_1unique, aggregate(man_1$'vehicle_one_MDRMANAV_No Maneuver', by = list(Id = man_1$Id), FUN=sum), by = "Id")
+man_1unique <- left_join(man_1unique, aggregate(man_1$'vehicle_one_MDRMANAV_Motor Vehicle', by = list(Id = man_1$Id), FUN=sum), by = "Id")
+man_1unique <- left_join(man_1unique, aggregate(man_1$vehicle_one_MDRMANAV_Pedestrian, by = list(Id = man_1$Id), FUN=sum), by = "Id")
+man_1unique <- left_join(man_1unique, aggregate(man_1$vehicle_one_MDRMANAV_Phantom, by = list(Id = man_1$Id), FUN=sum), by = "Id")
+man_1unique <- left_join(man_1unique, aggregate(man_1$'vehicle_one_MDRMANAV_Other', by = list(Id = man_1$Id), FUN=sum), by = "Id")
+
+colnames(man_1unique) <- c("Id", "vehicle_one_MDRMANAV_Unknown", "vehicle_one_MDRMANAV_No_Maneuver",
+                               "vehicle_one_MDRMANAV_Motor_Vehicle", "vehicle_one_MDRMANAV_Pedestrian", "vehicle_one_MDRMANAV_Phantom", "vehicle_one_MDRMANAV_Other")
+
+
+# Vehicle 2
+
+man_2unique <- aggregate(man_2$vehicle_two_MDRMANAV_Unknown, by = list(Id = man_2$Id), FUN=sum)
+man_2unique <- left_join(man_2unique, aggregate(man_2$'vehicle_two_MDRMANAV_No Maneuver', by = list(Id = man_2$Id), FUN=sum), by = "Id")
+man_2unique <- left_join(man_2unique, aggregate(man_2$'vehicle_two_MDRMANAV_Motor Vehicle', by = list(Id = man_2$Id), FUN=sum), by = "Id")
+man_2unique <- left_join(man_2unique, aggregate(man_2$vehicle_two_MDRMANAV_Pedestrian, by = list(Id = man_2$Id), FUN=sum), by = "Id")
+man_2unique <- left_join(man_2unique, aggregate(man_2$vehicle_two_MDRMANAV_Phantom, by = list(Id = man_2$Id), FUN=sum), by = "Id")
+man_2unique <- left_join(man_2unique, aggregate(man_2$'vehicle_two_MDRMANAV_Other', by = list(Id = man_2$Id), FUN=sum), by = "Id")
+
+colnames(man_2unique) <- c("Id", "vehicle_two_MDRMANAV_Unknown", "vehicle_two_MDRMANAV_No_Maneuver",
+                               "vehicle_two_MDRMANAV_Motor_Vehicle", "vehicle_two_MDRMANAV_Pedestrian", "vehicle_two_MDRMANAV_Phantom", "vehicle_two_MDRMANAV_Other")
+
+# Vehicle 3
+
+man_3unique <- aggregate(man_3$vehicle_three_MDRMANAV_Unknown, by = list(Id = man_3$Id), FUN=sum)
+man_3unique <- left_join(man_3unique, aggregate(man_3$'vehicle_three_MDRMANAV_No Maneuver', by = list(Id = man_3$Id), FUN=sum), by = "Id")
+man_3unique <- left_join(man_3unique, aggregate(man_3$'vehicle_three_MDRMANAV_Motor Vehicle', by = list(Id = man_3$Id), FUN=sum), by = "Id")
+man_3unique <- left_join(man_3unique, aggregate(man_3$vehicle_three_MDRMANAV_Pedestrian, by = list(Id = man_3$Id), FUN=sum), by = "Id")
+man_3unique <- left_join(man_3unique, aggregate(man_3$vehicle_three_MDRMANAV_Phantom, by = list(Id = man_3$Id), FUN=sum), by = "Id")
+man_3unique <- left_join(man_3unique, aggregate(man_3$'vehicle_three_MDRMANAV_Other', by = list(Id = man_3$Id), FUN=sum), by = "Id")
+
+colnames(man_3unique) <- c("Id", "vehicle_three_MDRMANAV_Unknown", "vehicle_three_MDRMANAV_No_Maneuver",
+                               "vehicle_three_MDRMANAV_Motor_Vehicle", "vehicle_three_MDRMANAV_Pedestrian", "vehicle_three_MDRMANAV_Phantom", "vehicle_three_MDRMANAV_Other")
+
+# Vehicle 4
+
+man_4unique <- aggregate(man_4$vehicle_four_MDRMANAV_Unknown, by = list(Id = man_4$Id), FUN=sum)
+man_4unique <- left_join(man_4unique, aggregate(man_4$'vehicle_four_MDRMANAV_No Maneuver', by = list(Id = man_4$Id), FUN=sum), by = "Id")
+man_4unique <- left_join(man_4unique, aggregate(man_4$'vehicle_four_MDRMANAV_Motor Vehicle', by = list(Id = man_4$Id), FUN=sum), by = "Id")
+man_4unique <- left_join(man_4unique, aggregate(man_4$vehicle_four_MDRMANAV_Pedestrian, by = list(Id = man_4$Id), FUN=sum), by = "Id")
+man_4unique <- left_join(man_4unique, aggregate(man_4$vehicle_four_MDRMANAV_Phantom, by = list(Id = man_4$Id), FUN=sum), by = "Id")
+man_4unique <- left_join(man_4unique, aggregate(man_4$'vehicle_four_MDRMANAV_Other', by = list(Id = man_4$Id), FUN=sum), by = "Id")
+
+colnames(man_4unique) <- c("Id", "vehicle_four_MDRMANAV_Unknown", "vehicle_four_MDRMANAV_No_Maneuver",
+                               "vehicle_four_MDRMANAV_Motor_Vehicle", "vehicle_four_MDRMANAV_Pedestrian", "vehicle_four_MDRMANAV_Phantom", "vehicle_four_MDRMANAV_Other")
+```
+
+```{r Damage Merge}
+man_1unique$Id <- as.character(man_1unique$Id)
+man_2unique$Id <- as.character(man_2unique$Id)
+man_3unique$Id <- as.character(man_3unique$Id)
+man_4unique$Id <- as.character(man_4unique$Id)
+
+
+
+final_df <- left_join(man_1unique, man_2unique, by = "Id")
+
+final_df <- left_join(final_df, man_3unique, by = "Id")
+
+final_df <- left_join(final_df, man_4unique, by = "Id")
+
+head(final_df, n = 20)
+
+```
+
+```{r Vehicle Any}
+
+# Taking out Vehicle_x from colnames
+df_colnames <- colnames(final_df)
+df_colnames <- df_colnames[1:length(df_colnames)]
+
+df_colnames <- gsub(x = df_colnames, "vehicle_one_", replacement = '')
+df_colnames <- gsub(x = df_colnames, "vehicle_two_", replacement = '')
+df_colnames <- gsub(x = df_colnames, "vehicle_three_", replacement = '')
+
+df_colnames <- gsub(x = df_colnames, "vehicle_four_", replacement = '')
+
+colnames_unique <- unique(df_colnames)
+
+for(i in colnames_unique[2:length(colnames_unique)]){
+  print(paste0(i, "_any"))
+final_df <- final_df %>% mutate(!!paste0(i,"_any") := ifelse(dplyr::select(., contains(i)) %>% rowSums(., na.rm = T) > 0, 1, 0))
+}
+
+final_df <- final_df %>% group_by(Id) %>% mutate(rn = row_number())
+final_df <- final_df[which(final_df$rn <= 1),]
+
+head(final_df)
+
+write.csv(final_df, file = "Maneuver_Wide.csv", na = "")
+```
+
+
+
+```{r Maneuver Wide to Long}
+
+final_colnames <- colnames(final_df)[grepl('any', colnames(final_df))]
+any_df <- final_df[, c('Id',final_colnames)]
+
+final_colnames
+# We want hte Id to be read in as a factor for 'gather'
+any_df$Id <- as.factor(any_df$Id)
+data_long <- gather(any_df, VariableName, Any_Value, "MDRMANAV_Unknown_any":"MDRMANAV_Other_any", factor_key = T )
+head(data_long, n = 100)
+write.csv(data_long, file = "Maneuver_Long.csv", na = "")
 ```
