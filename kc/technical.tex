@@ -37,7 +37,7 @@ The HDBScan methodology adapted to our problem follows these steps:
 	\end{enumerate}
 	\item Once all years have been clustered, overlay the cluster polygons on top of each other geographically. Find the intersection of all polygons that overlap more than $n$ years ($n$ in this case is a parameter that can be chosen by the end-user). The intersections are now time-based cluster polygons.
 	\item Relabel all points based on time-based cluster polygons for cluster determination.\footnote{The time-based cluster polygons were expanded by 0.01\% (approximately 1/2 mile in distance) to ensure the inclusion of the polygon vertices itself. The alternative was to iterate through the entire dataset and check for the points on the vertices/edges. This was done to improve the computational speed for efficient visualization.}
-	\item If the selected number of required years is more than 2, perform a significance test, using the same method mentioned above, for all points inside time-based cluster polygons against all unclustered points. If the time-based cluster polygon is not found to be significant, the points are relabeled as unclustered.
+	\item Perform a significance test, using the same method mentioned above, for all points inside time-based cluster polygons against all unclustered points. If the time-based cluster polygon is not found to be significant, the points are relabeled as unclustered.
 \end{enumerate}
 From a statistical perspective, the yearly clustering algorithm should identify a false positive cluster only 1 out of 20 times, if random points from that particular year's dataset to form a a cluster. The false positive cluster rate for time-based polygon clusters will be the same assuming random points are selected from all available years.
 
