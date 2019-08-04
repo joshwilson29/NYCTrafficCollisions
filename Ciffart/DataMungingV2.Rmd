@@ -1010,3 +1010,22 @@ data_long <- gather(any_df, VariableName, Any_Value, "MDRMANAV_Unknown_any":"MDR
 head(data_long, n = 100)
 write.csv(data_long, file = "Maneuver_Long.csv", na = "")
 ```
+
+## Accident Data
+
+```{r Accident Data Load}
+# change directory for loading data
+setwd("~/NYCTrafficCollisions/data/FARS2017NationalCSV")
+
+accident2017 <- read.csv("accident.csv")
+accident2016 <- read.csv("accident_2016.csv")
+accident2015 <- read.csv("accident_2015.csv")
+accident2014 <- read.csv("accident_2014.csv")
+
+accident2017$Id <- paste0("id_2017.", accident2017$ST_CASE)
+accident2016$Id <- paste0("id_2016.", accident2016$ST_CASE)
+accident2015$Id <- paste0("id_2015.", accident2015$ST_CASE)
+accident2014$Id <- paste0("id_2014.", accident2014$ST_CASE)
+
+merged_data <- rbind(accident2017, accident2016, accident2015, accident2014)
+```

@@ -1,0 +1,32 @@
+@article{dougru2015comparison,
+  title={Comparison of clustering techniques for traffic accident detection},
+  author={DO{\u{G}}RU, NEJDET and SUBA{\c{S}}I, ABD{\"U}LHAM{\.I}T},
+  journal={Turkish Journal of Electrical Engineering \& Computer Sciences},
+  volume={23},
+  number={Sup. 1},
+  pages={2124--2137},
+  year={2015},
+  publisher={The Scientific and Technological Research Council of Turkey}
+}
+
+@article{zhang2018dijkstra,
+  title={Dijkstra’s-DBSCAN: Fast, Accurate, and Routable Density Based Clustering of Traffic Incidents on Large Road Network},
+  author={Zhang, Yang and Han, Lee D and Kim, Hyun},
+  journal={Transportation Research Record},
+  volume={2672},
+  number={45},
+  pages={265--273},
+  year={2018},
+  publisher={SAGE Publications Sage CA: Los Angeles, CA}
+}
+
+@article{steenberghen2004intra,
+  title={Intra-urban location and clustering of road accidents using GIS: a Belgian example},
+  author={Steenberghen, Th{\'e}r{\`e}se and Dufays, T and Thomas, Isabelle and Flahaut, Beno{\^\i}t},
+  journal={International Journal of Geographical Information Science},
+  volume={18},
+  number={2},
+  pages={169--181},
+  year={2004},
+  publisher={Taylor \& Francis}
+}
