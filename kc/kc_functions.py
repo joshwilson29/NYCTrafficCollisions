@@ -290,12 +290,14 @@ def UniqueCases(dforig,varlist=['st_case'],column='id'):
 def plot_map(dfsrc,color='navy',ON_points=False,title="US Scatter Map"):
     '''
 
-    plots the accident points according to 'longitud' and 'latitude' into a map
+    plots the accident points according to 'longitud' and 'latitude' into a map and id for the poitns
     If color parameter is not a list, it's just 1 color, otherwise, it should inidicate clusters for each data point.
     ON_points is a list of points where the a circular outline will be drawn regardless of the clusters - used for indicating "ON" points
     
     '''
-    dftmp=dfsrc.copy()
+    #dftmp=dfsrc.copy()
+    dftmp=dfsrc.reset_index().loc[:,['id','longitud','latitude']]
+    dftmp['target']=ON_points
    
     if type(color) is not str:
         dftmp['cluster']=[str(i) for i in color]
@@ -313,7 +315,7 @@ def plot_map(dfsrc,color='navy',ON_points=False,title="US Scatter Map"):
 
     # init figure
     p = figure(title=title, 
-            toolbar_location="left", plot_width=1100, plot_height=700, x_range=(-130,-65),y_range=(22,53)) #, tooltips=[('Long','@longitud'),('Lat','@latitude'),('Status','@ON')])
+            toolbar_location="left", plot_width=1100, plot_height=700, x_range=(-130,-65),y_range=(22,53), tooltips=[('ID','@id'),('cluster','@cluster'),('ON','@ON')]) #, tooltips=[('Long','@longitud'),('Lat','@latitude'),('Status','@ON')])
 
     # Draw state lines
     p.patches(state_xs, state_ys, fill_alpha=0.0,
@@ -328,8 +330,8 @@ def plot_map(dfsrc,color='navy',ON_points=False,title="US Scatter Map"):
  
     if type(ON_points) is not bool:
         dftmp['ON']=ON_points
-        params['line_color']='ON'
-        params['line_alpha']='ON'
+        # params['line_color']='ON'
+        # params['line_alpha']='ON'
 
     source = ColumnDataSource(dftmp)
 
