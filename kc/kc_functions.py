@@ -340,7 +340,10 @@ def plot_map(dfsrc,color='navy',ON_points=False,title="US Scatter Map"):
     # The scatter markers
     if type(color) is not str:
         if len(dftmp['cluster'].unique())<20:
-            palette = d3['Category20'][len(dftmp['cluster'].unique())]
+            if len(dftmp['cluster']) in d3['Category20'].keys():
+                palette = d3['Category20'][len(dftmp['cluster'].unique())]
+            else:
+                palette=['#1f77b4','#aec7e8']
         else:
             palette = viridis(len(dftmp['cluster'].unique()))
         color_map = bmo.CategoricalColorMapper(factors=dftmp['cluster'].unique(), palette=palette)
