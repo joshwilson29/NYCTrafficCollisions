@@ -287,7 +287,7 @@ def UniqueCases(dforig,varlist=['st_case'],column='id'):
     return len(dforig[column].unique())==dforig.shape[0],max(dforig.groupby(column)[varlist].count().max())
 # plotting map
 
-def plot_map(dfsrc,color='navy',ON_points=False,title="US Scatter Map"):
+def plot_map(dfsrc,color='navy',ON_points=False,title="US Scatter Map",state=None):
     '''
 
     plots the accident points according to 'longitud' and 'latitude' into a map and id for the poitns
@@ -310,8 +310,12 @@ def plot_map(dfsrc,color='navy',ON_points=False,title="US Scatter Map"):
 
     # separate latitude and longitude points for the borders
     #   of the states.
-    state_xs = [us_st[code]["lons"] for code in us_st]
-    state_ys = [us_st[code]["lats"] for code in us_st]
+    if state is not None:
+        state_xs=[us_st[state]["lons"]]
+        state_ys=[us_st[state]["lats"]]
+    else:
+        state_xs = [us_st[code]["lons"] for code in us_st]
+        state_ys = [us_st[code]["lats"] for code in us_st]
 
     # init figure
     p = figure(title=title, 
